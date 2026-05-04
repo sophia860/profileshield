@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sophia860.github.io/profileshield/sitemap.xml
