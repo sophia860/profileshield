@@ -3,75 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProfileShield — Free Online Safety Tools for Dating & Scams</title>
-<meta name="description" content="Free tools to protect yourself online. Check if your match is a scammer, audit your dating profile, and spot text scams. No login required.">
+<title>ProfileShield — Free Online Safety Tools</title>
+<meta name="description" content="Free tools to protect yourself online. Check if your match is a scammer, spot fake checks, audit your dating profile, and catch text scams. No login.">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f13;color:#e8e8f0;min-height:100vh}
-  .hero{background:linear-gradient(135deg,#0f0f1a,#1a1a2e,#0f1a2e);padding:60px 24px 48px;text-align:center}
-  .logo{font-size:28px;font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .tagline{color:#9ca3af;font-size:16px;margin-bottom:40px}
-  h1{font-size:clamp(26px,6vw,44px);font-weight:900;line-height:1.15;margin-bottom:16px}
-  .sub{color:#9ca3af;font-size:17px;max-width:520px;margin:0 auto}
-  .container{max-width:680px;margin:0 auto;padding:40px 20px}
-  .tools-grid{display:flex;flex-direction:column;gap:16px}
-  .tool-card{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:20px;padding:28px;text-decoration:none;color:inherit;transition:all 0.2s;display:block}
-  .tool-card:hover{border-color:#6366f1;transform:translateY(-2px);box-shadow:0 12px 40px rgba(99,102,241,0.15)}
-  .tool-icon{font-size:36px;margin-bottom:14px}
-  .tool-title{font-size:20px;font-weight:800;margin-bottom:6px}
-  .tool-desc{color:#9ca3af;font-size:15px;line-height:1.5;margin-bottom:14px}
-  .tool-cta{font-size:13px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:1px}
-  .stat-bar{display:flex;gap:24px;justify-content:center;margin:48px 0;flex-wrap:wrap}
-  .stat{text-align:center}
-  .stat-num{font-size:28px;font-weight:900;color:#6366f1}
-  .stat-label{font-size:13px;color:#6b7280;margin-top:4px}
-  .footer{text-align:center;padding:40px 20px;color:#4b5563;font-size:13px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f13;color:#e8e8f0;min-height:100vh}
+.hero{background:linear-gradient(135deg,#0f0f1a,#1a1a2e,#0f1a2e);padding:56px 24px 48px;text-align:center}
+.logo{font-size:30px;font-weight:900;margin-bottom:6px;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{color:#6b7280;font-size:14px;margin-bottom:40px;text-transform:uppercase;letter-spacing:2px}
+h1{font-size:clamp(26px,6vw,44px);font-weight:900;line-height:1.15;margin-bottom:16px}
+.sub{color:#9ca3af;font-size:17px;max-width:520px;margin:0 auto}
+.container{max-width:700px;margin:0 auto;padding:40px 20px}
+.stats{display:flex;gap:0;justify-content:center;margin-bottom:48px;background:#1a1a2e;border:1px solid #2d2d4e;border-radius:16px;overflow:hidden}
+.stat{flex:1;text-align:center;padding:20px 12px;border-right:1px solid #2d2d4e}
+.stat:last-child{border-right:none}
+.stat-n{font-size:24px;font-weight:900;color:#6366f1}
+.stat-l{font-size:12px;color:#6b7280;margin-top:4px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px}
+@media(max-width:500px){.tools{grid-template-columns:1fr}}
+.tool{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:16px;padding:22px;text-decoration:none;color:inherit;transition:all 0.2s;display:block}
+.tool:hover{border-color:#6366f1;transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,0.15)}
+.ti{font-size:32px;margin-bottom:10px}
+.tt{font-size:16px;font-weight:800;margin-bottom:6px;line-height:1.3}
+.td{color:#6b7280;font-size:13px;line-height:1.5;margin-bottom:10px}
+.tc{font-size:12px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:1px}
+.cta{background:linear-gradient(135deg,#1e1b4b,#1a1a2e);border:1px solid #4f46e5;border-radius:20px;padding:32px;text-align:center}
+.cta h2{font-size:22px;font-weight:800;margin-bottom:8px}
+.cta p{color:#9ca3af;font-size:15px;margin-bottom:24px;line-height:1.5}
+.btn{display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;padding:14px 36px;border-radius:12px;font-size:16px;font-weight:700;text-decoration:none;box-shadow:0 4px 20px rgba(99,102,241,0.4)}
 </style>
 </head>
 <body>
 <div class="hero">
   <div class="logo">🛡️ ProfileShield</div>
-  <div class="tagline">Free tools to stay safe online</div>
-  <h1>Know Who You're Really Talking To</h1>
-  <p class="sub">Romance scams cost Americans $1.3 billion last year. Our free tools take 3 minutes and could save you thousands.</p>
+  <div class="tagline">Free online safety tools</div>
+  <h1>Know the Truth Before You're a Victim</h1>
+  <p class="sub">Romance scams, fake checks, catfishing, text scams — our free tools take 3 minutes and could save you thousands.</p>
 </div>
-
 <div class="container">
-  <div class="stat-bar">
-    <div class="stat"><div class="stat-num">$1.3B</div><div class="stat-label">Lost to romance scams in 2024</div></div>
-    <div class="stat"><div class="stat-num">3 min</div><div class="stat-label">Average check time</div></div>
-    <div class="stat"><div class="stat-num">Free</div><div class="stat-label">No login, no account</div></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-n">$3.8B</div><div class="stat-l">Lost to scams in 2025</div></div>
+    <div class="stat"><div class="stat-n">3 min</div><div class="stat-l">Average check time</div></div>
+    <div class="stat"><div class="stat-n">Free</div><div class="stat-l">No login ever</div></div>
   </div>
-
-  <div class="tools-grid">
-    <a href="https://sophia860.github.io/profileshield/index.html" class="tool-card">
-      <div class="tool-icon">💘</div>
-      <div class="tool-title">Dating Match Risk Checker</div>
-      <div class="tool-desc">Someone you met online feels slightly off? Check 10 behavioral signals — romance scams, catfishing, pig butchering, SA scams. Get a risk score in 3 minutes.</div>
-      <div class="tool-cta">Start free check →</div>
+  <div class="tools">
+    <a href="https://sophia860.github.io/profileshield/index.html" class="tool">
+      <div class="ti">💘</div>
+      <div class="tt">Dating Match Scam Check</div>
+      <div class="td">Is your online match a romance scammer, catfish, or pig butchering setup?</div>
+      <div class="tc">Start free →</div>
     </a>
-
-    <a href="https://sophia860.github.io/profileshield/textscam.html" class="tool-card">
-      <div class="tool-icon">📱</div>
-      <div class="tool-title">Wrong Number Text Scam Checker</div>
-      <div class="tool-desc">Got a friendly text from a stranger with no explanation? The "wrong number" scam is the fastest growing scam in 2025. Check yours in 60 seconds.</div>
-      <div class="tool-cta">Check this text →</div>
+    <a href="https://sophia860.github.io/profileshield/textscam.html" class="tool">
+      <div class="ti">📱</div>
+      <div class="tt">Wrong Number Text Checker</div>
+      <div class="td">Got a friendly text from a stranger? Check if it's the #1 growing scam.</div>
+      <div class="tc">Check it →</div>
     </a>
-
-    <a href="https://sophia860.github.io/profileshield/profile-audit.html" class="tool-card">
-      <div class="tool-icon">✨</div>
-      <div class="tool-title">Dating Profile Audit</div>
-      <div class="tool-desc">Not getting matches on Hinge, Tinder, or Bumble? 2-minute audit finds exactly what's holding your profile back — photos, bio, and opener strategy.</div>
-      <div class="tool-cta">Audit my profile →</div>
+    <a href="https://sophia860.github.io/profileshield/check-scam.html" class="tool">
+      <div class="ti">💵</div>
+      <div class="tt">Fake Check Detector</div>
+      <div class="td">Received a check online? Find out if it's an overpayment or fraud setup.</div>
+      <div class="tc">Verify now →</div>
+    </a>
+    <a href="https://sophia860.github.io/profileshield/profile-audit.html" class="tool">
+      <div class="ti">✨</div>
+      <div class="tt">Dating Profile Audit</div>
+      <div class="td">Not getting matches? Find out exactly what's holding your profile back.</div>
+      <div class="tc">Audit mine →</div>
     </a>
   </div>
-
-  <div style="background:#1a1a2e;border:1px solid #4f46e5;border-radius:16px;padding:28px;margin-top:32px;text-align:center">
-    <div style="font-size:20px;font-weight:800;margin-bottom:8px">Need a human expert?</div>
-    <div style="color:#9ca3af;font-size:15px;margin-bottom:20px;line-height:1.5">Get a full written analysis of your situation. We review the pattern, advise on next steps, and tell you exactly what you're dealing with.</div>
-    <a href="https://www.paypal.com/ncp/payment/KPVCALFLPGMSE" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none">Get Full Report — $29</a>
+  <div class="cta">
+    <h2>Need a human to look at your situation?</h2>
+    <p>Get a full written analysis from an expert. We review the pattern, explain what you're dealing with, and tell you exactly what to do next.</p>
+    <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="btn">Get Full Report — $29</a>
   </div>
 </div>
-<div class="footer">ProfileShield — Free online safety tools. No login required.</div>
 </body>
 </html>
