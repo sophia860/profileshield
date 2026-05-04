@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is This Check Real? Free Check Scam Detector</title>
+<meta name="description" content="Got a check from someone you met online? Free tool to find out if it's an overpayment or fake check scam. 60 seconds, no login.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f13;color:#e8e8f0;min-height:100vh}
+.hero{background:linear-gradient(135deg,#1a1a0e,#2e2e0a,#1a1a0e);padding:48px 24px 40px;text-align:center;border-bottom:1px solid #2d2d1a}
+.badge{display:inline-block;background:rgba(234,179,8,0.15);border:1px solid rgba(234,179,8,0.35);color:#fde047;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+h1{font-size:clamp(22px,5vw,34px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sub{color:#9ca3af;font-size:16px;max-width:460px;margin:0 auto}
+.container{max-width:600px;margin:0 auto;padding:32px 20px}
+.progress-bar{background:#1a1a0e;border-radius:8px;height:6px;margin-bottom:32px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#eab308,#f59e0b);border-radius:8px;transition:width 0.4s ease}
+.card{background:#1a1a18;border:1px solid #2d2d1a;border-radius:16px;padding:28px;margin-bottom:20px}
+.step-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#eab308;margin-bottom:8px}
+.question{font-size:18px;font-weight:600;margin-bottom:6px;line-height:1.4}
+.hint{font-size:13px;color:#6b7280;margin-bottom:20px;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{background:#0f0f0a;border:2px solid #2d2d1a;border-radius:12px;padding:14px 18px;cursor:pointer;font-size:15px;text-align:left;color:#e8e8f0;transition:all 0.2s}
+.opt:hover{border-color:#eab308;background:rgba(234,179,8,0.07)}
+.hidden{display:none}
+.result-wrap{text-align:center}
+.score-ring{width:130px;height:130px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px;border:5px solid}
+.s-low{border-color:#10b981;color:#10b981;background:rgba(16,185,129,0.1)}
+.s-mid{border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,0.1)}
+.s-high{border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,0.1)}
+.sn{font-size:36px;font-weight:900;line-height:1}
+.sl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:4px;opacity:0.7}
+.rtitle{font-size:22px;font-weight:800;margin-bottom:10px}
+.rsub{color:#9ca3af;font-size:15px;line-height:1.6;margin-bottom:24px}
+.paywall{background:#1a1a18;border:1px solid #2d2d1a;border-radius:20px;overflow:hidden;margin-bottom:20px}
+.blurred{padding:20px 20px 0;filter:blur(5px);opacity:0.5;pointer-events:none;user-select:none}
+.brow{background:#0f0f0a;border-radius:10px;padding:13px 15px;margin-bottom:8px;font-size:13px;text-align:left;line-height:1.5;display:flex;gap:10px}
+.gate{background:linear-gradient(180deg,rgba(15,15,10,0) 0%,rgba(15,15,10,0.98) 38%);padding:60px 24px 28px;margin-top:-70px;position:relative;text-align:center}
+.gate h3{font-size:19px;font-weight:800;margin-bottom:8px}
+.gate p{color:#9ca3af;font-size:14px;margin-bottom:16px;line-height:1.5}
+.timer{font-size:13px;color:#eab308;font-weight:600;margin-bottom:14px}
+.wg{text-align:left;background:#0f0f0a;border-radius:10px;padding:14px;margin-bottom:16px}
+.wr{font-size:13px;color:#d1d5db;padding:4px 0;display:flex;gap:8px}
+.btn{display:block;width:100%;padding:16px;border-radius:12px;font-size:16px;font-weight:700;text-decoration:none;text-align:center;border:none;cursor:pointer;margin-bottom:8px}
+.btn-y{background:linear-gradient(135deg,#eab308,#f59e0b);color:#000;box-shadow:0 4px 20px rgba(234,179,8,0.4)}
+.btn-y:hover{transform:translateY(-2px)}
+.btn-g{background:transparent;border:1px solid #4b5563;color:#9ca3af;font-size:14px;padding:13px}
+.nav{color:#eab308;font-size:13px;text-decoration:none;display:block;text-align:center;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">💵 Check Fraud Detector</div>
+  <h1>Is This Check a Scam?</h1>
+  <p class="sub">Fake check and overpayment scams steal billions every year. Find out in 60 seconds if yours is real.</p>
+</div>
+<div class="container">
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+  <div id="quiz">
+    <div class="card" id="q1">
+      <div class="step-label">Question 1 of 7</div>
+      <div class="question">How did you receive this check?</div>
+      <div class="hint">Context matters — who sent it and why</div>
+      <div class="options">
+        <button class="opt" onclick="a(1,3,'Received check from someone met online')">From someone I met online (dating, marketplace, job)</button>
+        <button class="opt" onclick="a(1,3,'Check arrived as lottery prize or sweepstakes winning')">I supposedly won a lottery or prize</button>
+        <button class="opt" onclick="a(1,2,'Check from mystery shopper or work from home job')">For a mystery shopper / work-from-home job</button>
+        <button class="opt" onclick="a(1,1,'Check from selling something online marketplace')">I sold something and they overpaid</button>
+        <button class="opt" onclick="a(1,0,'Check from legitimate employer or client I know')">From a legitimate employer or client I know</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q2">
+      <div class="step-label">Question 2 of 7</div>
+      <div class="question">Is the amount more than what was agreed or expected?</div>
+      <div class="options">
+        <button class="opt" onclick="a(2,4,'Check is for more than agreed — asked to send back difference')">Yes — and they want me to send back the difference</button>
+        <button class="opt" onclick="a(2,3,'Check is for more than expected no explanation')">Yes — more than expected, no real explanation</button>
+        <button class="opt" onclick="a(2,0,'Amount is exactly what was agreed')">No — exactly what was agreed</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q3">
+      <div class="step-label">Question 3 of 7</div>
+      <div class="question">Are they asking you to act quickly before the check clears?</div>
+      <div class="hint">Banks show checks as "available" before they actually clear — scammers exploit this 3-5 day window</div>
+      <div class="options">
+        <button class="opt" onclick="a(3,4,'Yes urgent — send money or gift cards before it clears')">Yes — urgent, send money or gift cards now</button>
+        <button class="opt" onclick="a(3,2,'Some urgency but no specific deadline')">Some urgency but no hard deadline</button>
+        <button class="opt" onclick="a(3,0,'No urgency — normal timeline')">No urgency at all</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q4">
+      <div class="step-label">Question 4 of 7</div>
+      <div class="question">How do they want you to send the money back?</div>
+      <div class="options">
+        <button class="opt" onclick="a(4,4,'Wire transfer Western Union MoneyGram Zelle')">Wire transfer, Western Union, MoneyGram, or Zelle</button>
+        <button class="opt" onclick="a(4,5,'Gift cards — iTunes Amazon Google Play')">Gift cards (iTunes, Amazon, Google Play)</button>
+        <button class="opt" onclick="a(4,3,'Crypto Bitcoin or other cryptocurrency')">Crypto / Bitcoin</button>
+        <button class="opt" onclick="a(4,0,'Normal bank transfer or check')">Normal bank transfer or check</button>
+        <button class="opt" onclick="a(4,0,'They havent mentioned how yet')">Haven't mentioned how yet</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q5">
+      <div class="step-label">Question 5 of 7</div>
+      <div class="question">Have you verified the check with the issuing bank directly?</div>
+      <div class="hint">Not with the person who sent it — call the bank whose name is on the check using their publicly listed number</div>
+      <div class="options">
+        <button class="opt" onclick="a(5,0,'Yes called bank directly and confirmed')">Yes — called the bank directly and confirmed</button>
+        <button class="opt" onclick="a(5,1,'Called but talked to the sender not the bank')">Called, but talked to the sender not the bank</button>
+        <button class="opt" onclick="a(5,2,'Haven\'t verified yet')">Haven't verified yet</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q6">
+      <div class="step-label">Question 6 of 7</div>
+      <div class="question">Do you know this person in real life or only online?</div>
+      <div class="options">
+        <button class="opt" onclick="a(6,0,'Know them in person verified identity')">Know them in person, verified identity</button>
+        <button class="opt" onclick="a(6,2,'Met online and talked for a while')">Only met online — talked for a while</button>
+        <button class="opt" onclick="a(6,3,'Just met them online or through a random contact')">Just met them online or through random contact</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q7">
+      <div class="step-label">Question 7 of 7</div>
+      <div class="question">Does anything feel off about this situation?</div>
+      <div class="options">
+        <button class="opt" onclick="a(7,3,'Yes that\'s why I\'m here')">Yes — that's why I'm here</button>
+        <button class="opt" onclick="a(7,1,'Maybe — a few small things')">Maybe — a few small things</button>
+        <button class="opt" onclick="a(7,0,'No everything seems fine')">No — everything seems fine</button>
+      </div>
+    </div>
+  </div>
+  <div id="result" class="hidden result-wrap">
+    <div class="score-ring" id="ring"><div class="sn" id="num"></div><div class="sl">Risk Score</div></div>
+    <div class="rtitle" id="rtitle"></div>
+    <div class="rsub" id="rsub"></div>
+    <div class="paywall">
+      <div class="blurred">
+        <div class="brow">⚠️ <span>The overpayment pattern detected matches the #1 check fraud playbook. Here is what happens after you send the money back — and whether you are legally liable...</span></div>
+        <div class="brow">📋 <span>3 specific steps to take right now: what to do with the check, who to call, and how to protect yourself from being charged back...</span></div>
+        <div class="brow">🏦 <span>How to verify any check in under 5 minutes using the bank's real number — not the one on the letter...</span></div>
+      </div>
+      <div class="gate">
+        <div class="timer">⏱️ Your report is ready — expires in <span id="cd">10:00</span></div>
+        <h3>Get the Full Breakdown</h3>
+        <p>See exactly what this check pattern means, your legal exposure, and the 3 steps to take right now.</p>
+        <div class="wg">
+          <div class="wr">✅ <span>Whether this is fraud and what type</span></div>
+          <div class="wr">✅ <span>Your legal liability if you already sent money</span></div>
+          <div class="wr">✅ <span>How to verify the check in 5 minutes</span></div>
+          <div class="wr">✅ <span>Who to report it to and exact steps</span></div>
+        </div>
+        <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="btn btn-y">Get Full Report — $29</a>
+        <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="btn btn-g">Talk to an Expert — $99</a>
+      </div>
+    </div>
+    <a href="https://sophia860.github.io/profileshield/" class="nav">← Check a dating match →</a>
+  </div>
+</div>
+<script>
+let sc=0,cur=1;
+function a(q,pts,f){sc+=pts;document.getElementById('q'+q).classList.add('hidden');cur++;document.getElementById('progress').style.width=((cur-1)/7*100)+'%';if(cur<=7)document.getElementById('q'+cur).classList.remove('hidden');else show();}
+function show(){
+  document.getElementById('progress').style.width='100%';
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  let pct=Math.min(Math.round((sc/21)*100),98);
+  const ring=document.getElementById('ring');
+  document.getElementById('num').textContent=pct+'%';
+  if(pct<25){ring.className='score-ring s-low';document.getElementById('rtitle').textContent='Lower Risk — Likely Legitimate';document.getElementById('rsub').textContent='Your answers suggest this is probably a real check. The full report confirms what to verify before depositing.';}
+  else if(pct<55){ring.className='score-ring s-mid';document.getElementById('rtitle').textContent='Moderate Risk — Verify Before Acting';document.getElementById('rsub').textContent='Some patterns here match known check scams. Do not send any money back until you have the full picture.';}
+  else{ring.className='score-ring s-high';document.getElementById('rtitle').textContent='High Risk — Do Not Send Money';document.getElementById('rsub').textContent='This matches the classic overpayment / fake check scam pattern. If you deposit it and send money back, you will owe the bank — even after the check bounces.';}
+  let s=600;const cd=document.getElementById('cd');
+  const iv=setInterval(()=>{s--;let m=Math.floor(s/60),sec=s%60;cd.textContent=m+':'+(sec<10?'0':'')+sec;if(s<=0){clearInterval(iv);cd.parentElement.textContent='⏱️ Window closed';}},1000);
+}
+</script>
+</body>
+</html>
