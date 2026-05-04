@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Dating Profile Audit — Why You're Not Getting Matches</title>
+<meta name="description" content="Free dating profile audit tool. Find out exactly why you're not getting matches on Hinge, Tinder, or Bumble. Takes 2 minutes.">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d0d14;color:#e8e8f0;min-height:100vh}
+  .hero{background:linear-gradient(135deg,#0d1117 0%,#161b22 50%,#0d2137 100%);padding:48px 24px 40px;text-align:center}
+  .badge{display:inline-block;background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.35);color:#f9a8d4;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+  h1{font-size:clamp(22px,5vw,36px);font-weight:800;line-height:1.2;margin-bottom:12px}
+  .sub{color:#9ca3af;font-size:16px;max-width:480px;margin:0 auto}
+  .container{max-width:600px;margin:0 auto;padding:32px 20px}
+  .progress-bar{background:#1a1a2e;border-radius:8px;height:6px;margin-bottom:32px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,#ec4899,#8b5cf6);border-radius:8px;transition:width 0.4s ease}
+  .card{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:28px;margin-bottom:20px}
+  .step-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ec4899;margin-bottom:8px}
+  .question{font-size:18px;font-weight:600;margin-bottom:6px;line-height:1.4}
+  .hint{font-size:13px;color:#6b7280;margin-bottom:20px}
+  .options{display:flex;flex-direction:column;gap:10px}
+  .option{background:#0d0d14;border:2px solid #30363d;border-radius:12px;padding:14px 18px;cursor:pointer;font-size:15px;text-align:left;color:#e8e8f0;transition:all 0.2s}
+  .option:hover{border-color:#ec4899;background:rgba(236,72,153,0.07)}
+  .hidden{display:none}
+  .result-card{background:#161b22;border-radius:20px;padding:36px 28px;text-align:center}
+  .score-ring{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px;font-weight:900;border:4px solid}
+  .score-a{border-color:#10b981;color:#10b981;background:rgba(16,185,129,0.1)}
+  .score-b{border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,0.1)}
+  .score-c{border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,0.1)}
+  .result-title{font-size:22px;font-weight:800;margin-bottom:10px}
+  .result-body{color:#9ca3af;font-size:15px;line-height:1.6;margin-bottom:24px}
+  .fixes{text-align:left;background:#0d0d14;border-radius:12px;padding:20px;margin-bottom:28px}
+  .fix-item{font-size:14px;padding:8px 0;border-bottom:1px solid #21262d;display:flex;gap:10px;line-height:1.4}
+  .fix-item:last-child{border-bottom:none}
+  .upsell{background:linear-gradient(135deg,#1a0a2e,#161b22);border:1px solid #7c3aed;border-radius:16px;padding:24px;margin-bottom:16px}
+  .upsell h3{font-size:18px;font-weight:700;margin-bottom:8px}
+  .upsell p{color:#9ca3af;font-size:14px;margin-bottom:16px;line-height:1.5}
+  .btn{display:block;width:100%;padding:16px;border-radius:12px;font-size:16px;font-weight:700;text-decoration:none;text-align:center;border:none;cursor:pointer;transition:all 0.2s}
+  .btn-primary{background:linear-gradient(135deg,#ec4899,#8b5cf6);color:white}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(236,72,153,0.4)}
+  .nav-link{color:#ec4899;font-size:14px;text-decoration:none;display:block;text-align:center;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">💬 Free Profile Audit</div>
+  <h1>Why Aren't You Getting Matches?</h1>
+  <p class="sub">2-minute audit reveals what's actually holding your dating profile back on Hinge, Tinder, or Bumble.</p>
+</div>
+<div class="container">
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+  <div id="quiz">
+    <div class="card" id="q1">
+      <div class="step-label">Question 1 of 8</div>
+      <div class="question">What does your main photo show?</div>
+      <div class="hint">Your first photo is 80% of the swipe decision</div>
+      <div class="options">
+        <button class="option" onclick="ans(1,0,'solo clear face shot outdoors or doing something','Clear solo face shot — outdoors or doing something')">Clear solo face shot — outdoors or doing something</button>
+        <button class="option" onclick="ans(1,2,'group photo as main pic','Group photo as main pic')">Group photo as main pic</button>
+        <button class="option" onclick="ans(1,2,'sunglasses hat obscures face','Sunglasses / hat obscuring face')">Sunglasses / hat obscuring face</button>
+        <button class="option" onclick="ans(1,3,'selfie bathroom mirror gym','Bathroom mirror / gym selfie')">Bathroom mirror / gym selfie</button>
+        <button class="option" onclick="ans(1,1,'headshot style photo','Headshot / professional photo')">Headshot / professional photo</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q2">
+      <div class="step-label">Question 2 of 8</div>
+      <div class="question">How many photos do you have?</div>
+      <div class="options">
+        <button class="option" onclick="ans(2,0,'6+ photos variety','6+ photos with variety')">6+ photos with variety</button>
+        <button class="option" onclick="ans(2,1,'4-5 photos','4–5 photos')">4–5 photos</button>
+        <button class="option" onclick="ans(2,2,'2-3 photos','2–3 photos')">2–3 photos</button>
+        <button class="option" onclick="ans(2,3,'1 photo','Only 1 photo')">Only 1 photo</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q3">
+      <div class="step-label">Question 3 of 8</div>
+      <div class="question">What does your bio say?</div>
+      <div class="hint">Most bios are either empty or clichés — both kill matches</div>
+      <div class="options">
+        <button class="option" onclick="ans(3,0,'specific interesting hook or story','Has a specific hook, story, or funny line')">Has a specific hook, story, or funny line</button>
+        <button class="option" onclick="ans(3,2,'generic loves travel gym coffee','Generic — loves travel, gym, coffee')">Generic — loves travel, gym, coffee</button>
+        <button class="option" onclick="ans(3,3,'empty no bio','Empty / no bio')">Empty / no bio</button>
+        <button class="option" onclick="ans(3,1,'a few lines about interests','A few lines about my interests')">A few lines about my interests</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q4">
+      <div class="step-label">Question 4 of 8</div>
+      <div class="question">Do you have a photo showing you doing something?</div>
+      <div class="hint">Activity photos (cooking, hiking, at a concert) outperform posed photos 3:1</div>
+      <div class="options">
+        <button class="option" onclick="ans(4,0,'yes multiple activity shots','Yes — multiple activity shots')">Yes — multiple activity shots</button>
+        <button class="option" onclick="ans(4,1,'one activity photo','Just one activity photo')">Just one activity photo</button>
+        <button class="option" onclick="ans(4,3,'no all posed','No — all posed / standing photos')">No — all posed / standing photos</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q5">
+      <div class="step-label">Question 5 of 8</div>
+      <div class="question">Do your photos show the same person clearly in each one?</div>
+      <div class="hint">Inconsistency makes people swipe left — they can't picture you</div>
+      <div class="options">
+        <button class="option" onclick="ans(5,0,'yes clearly same person','Yes — clearly the same person throughout')">Yes — clearly the same person throughout</button>
+        <button class="option" onclick="ans(5,2,'different looks hat sunglasses','Different looks — hat, sunglasses, angles vary a lot')">Different looks — varies a lot</button>
+        <button class="option" onclick="ans(5,3,'some look older or very different','Some look much older or noticeably different')">Some look much older or noticeably different</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q6">
+      <div class="step-label">Question 6 of 8</div>
+      <div class="question">Do you initiate conversations when you match?</div>
+      <div class="options">
+        <button class="option" onclick="ans(6,0,'yes personalized opener','Yes — personalized opener referencing their profile')">Yes — personalized opener referencing their profile</button>
+        <button class="option" onclick="ans(6,1,'yes generic hey or hi','Yes — usually "hey" or "hi"')">Yes — usually "hey" or "hi"</button>
+        <button class="option" onclick="ans(6,2,'wait for them to message first','Wait for them to message first')">Wait for them to message first</button>
+        <button class="option" onclick="ans(6,3,'matches go cold before i message','Matches go cold before I message')">Matches go cold before I message</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q7">
+      <div class="step-label">Question 7 of 8</div>
+      <div class="question">Which app are you struggling most on?</div>
+      <div class="options">
+        <button class="option" onclick="ans(7,0,'hinge','Hinge')">Hinge</button>
+        <button class="option" onclick="ans(7,0,'tinder','Tinder')">Tinder</button>
+        <button class="option" onclick="ans(7,0,'bumble','Bumble')">Bumble</button>
+        <button class="option" onclick="ans(7,0,'all of them','All of them')">All of them</button>
+      </div>
+    </div>
+    <div class="card hidden" id="q8">
+      <div class="step-label">Question 8 of 8</div>
+      <div class="question">How long have you been on the app without results?</div>
+      <div class="options">
+        <button class="option" onclick="ans(8,1,'less than a month','Less than a month')">Less than a month</button>
+        <button class="option" onclick="ans(8,2,'1-3 months','1–3 months')">1–3 months</button>
+        <button class="option" onclick="ans(8,3,'over 3 months','Over 3 months without traction')">Over 3 months without traction</button>
+      </div>
+    </div>
+  </div>
+  <div id="result" class="hidden">
+    <div class="result-card">
+      <div class="score-ring" id="scoreRing"></div>
+      <div class="result-title" id="resultTitle"></div>
+      <div class="result-body" id="resultBody"></div>
+      <div class="fixes" id="fixList"></div>
+      <div class="upsell">
+        <h3>Want your profile actually rewritten?</h3>
+        <p>Get a human-written bio, photo order recommendation, and opening line template — personalized to your profile. Most people see match rates double within a week.</p>
+        <a href="https://www.paypal.com/ncp/payment/KPVCALFLPGMSE" class="btn btn-primary">Get My Profile Rewritten — $29</a>
+      </div>
+      <a href="https://sophia860.github.io/profileshield/" class="nav-link">← Check if your match is real →</a>
+    </div>
+  </div>
+</div>
+<script>
+let score=0,current=1,issues=[];
+function ans(q,pts,key,label){
+  score+=pts;
+  if(pts>=2) issues.push(label||key);
+  document.getElementById('q'+q).classList.add('hidden');
+  current++;
+  let p=(current-1)/8*100;
+  document.getElementById('progress').style.width=p+'%';
+  if(current<=8){document.getElementById('q'+current).classList.remove('hidden');}
+  else{showResult();}
+}
+function showResult(){
+  document.getElementById('progress').style.width='100%';
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  const ring=document.getElementById('scoreRing');
+  const title=document.getElementById('resultTitle');
+  const body=document.getElementById('resultBody');
+  const fixes=document.getElementById('fixList');
+  let grade=score<=4?'A':score<=9?'B':'C';
+  ring.className='score-ring score-'+grade.toLowerCase();
+  ring.textContent=grade;
+  if(grade==='A'){title.textContent='Strong Profile — Minor Tweaks';body.textContent='Your profile is in good shape. The issues holding you back are probably volume and opener quality rather than the profile itself.';}
+  else if(grade==='B'){title.textContent='Average Profile — Clear Fix Points';body.textContent='Your profile is getting you some matches but there are specific things pulling your score down. The fixes below should noticeably improve results.';}
+  else{title.textContent='Profile Needs Work — Multiple Issues Found';body.textContent='Several common blockers are costing you matches. The good news: these are all fixable within a day without paying for premium features.';}
+  let html='<div style="font-size:12px;color:#6b7280;margin-bottom:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Things to fix</div>';
+  if(issues.length===0){html+='<div class="fix-item"><span>✅</span><span>No major issues found — focus on volume and personalized openers</span></div>';}
+  else{issues.forEach(i=>{html+=`<div class="fix-item"><span>🔧</span><span>${i}</span></div>`;});}
+  fixes.innerHTML=html;
+}
+</script>
+</body>
+</html>
