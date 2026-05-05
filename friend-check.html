@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is My Friend Being Scammed? — ProfileShield</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .logo {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        .quiz-section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .question.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .q-text {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .q-number {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #e0e0e0;
+            text-align: left;
+        }
+        
+        .option:hover {
+            background: rgba(96,165,250,0.2);
+            border-color: rgba(96,165,250,0.5);
+        }
+        
+        .option input {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .progress {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-next {
+            flex: 1;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            color: white;
+        }
+        
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(96,165,250,0.3);
+        }
+        
+        .btn-back {
+            padding: 12px 16px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #e0e0e0;
+        }
+        
+        .btn-back:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        #result {
+            display: none;
+        }
+        
+        .result-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .score {
+            font-size: 64px;
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .risk-label {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .risk-low { color: #10b981; }
+        .risk-medium { color: #f59e0b; }
+        .risk-high { color: #ef4444; }
+        
+        .result-text {
+            color: #bbb;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .blur-section {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            filter: blur(3px);
+            pointer-events: none;
+        }
+        
+        .blur-label {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .payment-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        
+        .payment-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(96,165,250,0.3);
+        }
+        
+        .timer {
+            font-size: 12px;
+            color: #f59e0b;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🛡️</div>
+            <h1>Is My Friend Being Scammed?</h1>
+            <p class="subtitle">Spot romance scam patterns your friend might miss</p>
+        </header>
+        
+        <div id="quiz">
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="quiz-section">
+                <div class="question active" data-score="0">
+                    <div class="q-number">Question 1 of 10</div>
+                    <div class="q-text">How long has your friend been talking to this person online?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q1" value="0"> Less than 2 weeks</label>
+                        <label class="option"><input type="radio" name="q1" value="3"> 2-4 weeks</label>
+                        <label class="option"><input type="radio" name="q1" value="5"> 1-3 months</label>
+                        <label class="option"><input type="radio" name="q1" value="2"> More than 3 months</label>
+                    </div>
+                </div>
+                
+                <div class="question" data-score="0">
+                    <div class="q-number">Question 2 of 10</div>
+                    <div class="q-text">Did they push your friend to communicate off the dating app quickly?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q2" value="8"> Yes, within days (WhatsApp/Telegram)</label>
+                        <label class="option"><input type="radio" name="q2" value="4"> Yes, after a few weeks</label>
+                        <label class="option"><input type="radio" name="q2" value="1"> Naturally transitioned</label>
+                        <label class="option"><input type="radio" name="q2" value="0"> Still on the app</label>
+                    </div>
+                </div>
+                
+                <div class="question" data-score="0">
+                    <div class="q-number">Question 3 of 10</div>
+                    <div class="q-text">Has your friend mentioned they've never video called this person?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q3" value="12"> Yes, always excuses (bad signal, broken camera)</label>
+                        <label class="option"><input type="radio" name="q3" value="6"> Yes, but they keep trying to arrange it</label>
+                        <label class="option"><input type="radio" name="q3" value="2"> They video call regularly</label>
+                        <label class="option"><input type="radio" name="q3" value="0"> Not applicable</label>
+                    </div>
+                </div>
+                
+                <div class="question" data-score="0">
+                    <div class="q-number">Question 4 of 10</div>
+                    <div class="q-text">How would you describe this person's presentation?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q4" value="7"> Almost too perfect (model-level photos, perfect personality)</label>
+                        <label class="option"><input type="radio" name="q4" value="3"> Very attractive but with some normal quirks</label>
+                        <label class="option"><input type="radio" name="q4" value="1"> Average/realistic</label>
+                        <label class="option"><input type="radio" name="q4" value="0"> Photos seem normal</label>
+                    </div>
+                </div>
+                
+                <div class="question" data-score="0">
+                    <div class="q-number">Question 5 of 10</div>
+                    <div class="q-text">Has money come up yet?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q5" value="15"> Yes, they asked your friend for money</label>
+                        <label class="option"><input type="radio" name="q5" value="10"> They mentioned a money/investment opportunity</label>
+                        <label class="option"><input type="radio" name="q5" value="4"> They mentioned needing money but haven't asked</label>
+                        <label class="option"><input type="radio" name="q5" value="0"> No, money hasn't come up</label>
+                    </div>
+                </div>
+                
+                <div class="question" data-score="0">
+                    <div class="q-number">Question 6 of 10</div>
+                    <div class="q-text">What's the stated reason they can't meet in person?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q6" value="10"> Deployed military / overseas work / oil rig</label>
+                        <label class="option"><input type="radio" name="q6" value="5"> Long distance but planning to visit</label>
+                        <label class="option"><input type="radio" name="q6" value="2"> They haven't gotten around to it yet</label>
+                        <label class="option"><input type="radio" name="q6" value="0"> They've already met in person</label>
+                    </div>
+                </div>
+                
+                <div class="question" data-score="0">
+                    <div class="q-number">Question 7 of 10</div>
+                    <div class="q-text">How intense is their communication style?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q7" value="8"> "I love you" within days, extremely affectionate, talking about future</label>
+                        <label class="option"><input type="radio" name="q7" value="4"> Quite affectionate but developing naturally</label>
+                        <label class="option"><input type="radio" name="q7" value="1"> Normal pace, friendly</label>
+                        <label class="option"><input type="radio" name="q7" value="0"> Casual, low intensity</label>
+                    </div>
+                </div>
+                
+                <div class="question" data-score="0">
+                    <div class="q-number">Question 8 of 10</div>
+                    <div class="q-text">Has your friend noticed inconsistencies in their story?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q8" value="9"> Yes, details that don't add up or change</label>
+                        <label class="option"><input type="radio" name="q8" value="4"> Maybe, but nothing concrete</label>
+                        <label class="option"><input type="radio" name="q8" value="0"> No, they seem consistent</label>
+                        <label class="option"><input type="radio" name="q8" value="0"> Haven't noticed</label>
+                    </div>
+                </div>
+                
+                <div class="question" data-score="0">
+                    <div class="q-number">Question 9 of 10</div>
+                    <div class="q-text">Does your friend seem to be sharing personal/financial info early?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q9" value="10"> Yes, already shared bank/investment details</label>
+                        <label class="option"><input type="radio" name="q9" value="6"> Starting to, in what feels like natural conversation</label>
+                        <label class="option"><input type="radio" name="q9" value="2"> Somewhat, but cautiously</label>
+                        <label class="option"><input type="radio" name="q9" value="0"> No, keeping it private</label>
+                    </div>
+                </div>
+                
+                <div class="question" data-score="0">
+                    <div class="q-number">Question 10 of 10</div>
+                    <div class="q-text">How does your friend respond when you express concerns?</div>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q10" value="7"> Gets defensive, says you don't understand, very emotionally invested</label>
+                        <label class="option"><input type="radio" name="q10" value="3"> Acknowledges your concerns but believes they're being careful</label>
+                        <label class="option"><input type="radio" name="q10" value="1"> Open to hearing your thoughts</label>
+                        <label class="option"><input type="radio" name="q10" value="0"> You haven't expressed concerns</label>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-back" id="backBtn" style="display:none;" onclick="previousQuestion()">← Back</button>
+                    <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Next →</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="result" class="result-card">
+            <div class="logo">🛡️</div>
+            <h2 id="resultTitle" style="margin-top:20px;"></h2>
+            <div id="riskScore" class="score"></div>
+            <div id="riskLabel" class="risk-label"></div>
+            <div id="resultText" class="result-text"></div>
+            
+            <div class="blur-section">
+                <h3 style="margin-bottom: 15px; color: #999;">Detailed Breakdown (Unlock)</h3>
+                <p style="color: #666; font-size: 12px; margin-bottom: 10px;">What each signal means • Why it matters • How to have the conversation • Next steps</p>
+                <div style="height: 60px; background: rgba(96,165,250,0.1); border-radius: 6px; margin: 15px 0;"></div>
+            </div>
+            
+            <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="payment-button">Unlock Full Report — $29</a>
+            <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="payment-button" style="background: linear-gradient(135deg, #a78bfa, #ec4899); margin-top: 10px;">Talk to an Advisor — $99</a>
+            
+            <div class="timer" id="timer"></div>
+            
+            <button class="btn-back" style="width:100%; margin-top:30px;" onclick="location.href='./hub.html'">← Back to Tools</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentQuestion = 0;
+        const questions = document.querySelectorAll('.question');
+        let score = 0;
+        let startTime = Date.now();
+        
+        function updateProgress() {
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function showQuestion(n) {
+            questions[currentQuestion].classList.remove('active');
+            currentQuestion = n;
+            if (currentQuestion >= questions.length) {
+                showResult();
+                return;
+            }
+            questions[currentQuestion].classList.add('active');
+            document.getElementById('backBtn').style.display = currentQuestion === 0 ? 'none' : 'block';
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? 'Get My Score' : 'Next →';
+            updateProgress();
+        }
+        
+        function nextQuestion() {
+            const selected = document.querySelector(`input[name="q${currentQuestion + 1}"]:checked`);
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+            score += parseInt(selected.value);
+            showQuestion(currentQuestion + 1);
+        }
+        
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                const selected = document.querySelector(`input[name="q${currentQuestion + 1}"]:checked`);
+                if (selected) {
+                    score -= parseInt(selected.value);
+                    selected.checked = false;
+                }
+                showQuestion(currentQuestion - 1);
+            }
+        }
+        
+        function showResult() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            
+            const percentage = Math.min(100, (score / 100) * 100);
+            let label, text, color;
+            
+            if (percentage < 20) {
+                label = 'Low Risk';
+                color = 'risk-low';
+                text = 'Based on the signals you described, this situation seems relatively normal so far. Continue to watch for red flags, but there\'s no immediate cause for concern.';
+            } else if (percentage < 50) {
+                label = 'Moderate Risk';
+                color = 'risk-medium';
+                text = 'Several warning signs are present. Your friend should slow down, ask more questions, and definitely avoid sending money or sharing personal financial info.';
+            } else if (percentage < 80) {
+                label = 'High Risk';
+                color = 'risk-high';
+                text = 'Multiple serious red flags match known scam patterns. This is likely a romance scam or catfish situation. Your friend is at risk of financial or emotional harm.';
+            } else {
+                label = 'Critical Risk';
+                color = 'risk-high';
+                text = 'The pattern is extremely consistent with active romance scams. Immediate action needed — your friend should cut contact and consider reporting to the platform and FBI.';
+            }
+            
+            document.getElementById('riskScore').textContent = Math.round(percentage) + '%';
+            document.getElementById('riskLabel').className = 'risk-label ' + color;
+            document.getElementById('riskLabel').textContent = label;
+            document.getElementById('resultText').textContent = text;
+            document.getElementById('resultTitle').textContent = 'Risk Assessment';
+            
+            startTimer();
+        }
+        
+        function startTimer() {
+            let remaining = 10 * 60;
+            function updateTimer() {
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                document.getElementById('timer').textContent = `⏱️ Detailed report available for ${mins}m ${secs}s`;
+                remaining--;
+                if (remaining >= 0) setTimeout(updateTimer, 1000);
+            }
+            updateTimer();
+        }
+        
+        showQuestion(0);
+    </script>
+</body>
+</html>
