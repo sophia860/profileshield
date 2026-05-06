@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversation Analyzer — Spot Scammer Language Patterns</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .subtitle {
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+        .input-section {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #e0e0e0;
+        }
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            background: #0f1428;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+        }
+        .char-count {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99,102,241,0.3);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        .results.show {
+            display: block;
+        }
+        .score-box {
+            background: #0f1428;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .score-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .risk-low { color: #22c55e; }
+        .risk-medium { color: #eab308; }
+        .risk-high { color: #ef4444; }
+        .risk-label {
+            font-size: 18px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .signals-found {
+            background: #0f1428;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .signal-item {
+            margin: 12px 0;
+            padding: 10px;
+            background: #1a1f3a;
+            border-left: 3px solid #ef4444;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .signal-item.medium {
+            border-left-color: #eab308;
+        }
+        .signal-item.low {
+            border-left-color: #22c55e;
+        }
+        .signal-text {
+            margin-top: 5px;
+            color: #999;
+            font-size: 13px;
+        }
+        .paywall {
+            background: #0f1428;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        .paywall.show {
+            display: block;
+        }
+        .paywall h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        .paywall p {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .timer {
+            color: #ef4444;
+            font-weight: bold;
+            margin: 15px 0;
+            font-size: 18px;
+        }
+        .payment-buttons {
+            display: grid;
+            gap: 12px;
+        }
+        .pay-btn {
+            padding: 12px;
+            background: #2d3748;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .pay-btn:hover {
+            background: #3d4758;
+            border-color: #555;
+        }
+        .pay-btn.premium {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: none;
+        }
+        .preview-note {
+            font-size: 13px;
+            color: #666;
+            margin-top: 15px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Conversation Analyzer</h1>
+        <p class="subtitle">Paste a conversation. We'll spot scammer language patterns.</p>
+        
+        <div class="input-section">
+            <label for="conversation">Paste the conversation (text, messages, emails):</label>
+            <textarea id="conversation" placeholder="Paste their messages here...&#10;&#10;Example:&#10;Hey beautiful! I fell for you immediately ❤️&#10;I've never felt this way before&#10;What's your number? Let's talk on WhatsApp..."></textarea>
+            <div class="char-count"><span id="charCount">0</span> characters</div>
+        </div>
+        
+        <button onclick="analyzeConversation()">Analyze for Scammer Signals</button>
+        
+        <div class="results" id="results">
+            <div class="score-box">
+                <div style="color: #999; font-size: 14px;">Risk Score</div>
+                <div class="score-number" id="scoreNumber">--</div>
+                <div class="risk-label" id="riskLabel">--</div>
+                <div style="color: #999; font-size: 12px; margin-top: 10px;" id="riskExplain">--</div>
+            </div>
+            
+            <div class="signals-found" id="signalsFound"></div>
+            
+            <div class="paywall" id="paywall">
+                <h3>📊 Full Analysis Available</h3>
+                <p>Unlock detailed signal breakdown, personalized risk assessment, and next steps.</p>
+                <div class="timer">⏱️ <span id="timerDisplay">10:00</span> before this preview expires</div>
+                <div class="payment-buttons">
+                    <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="pay-btn premium">
+                        💳 Full Report ($29)
+                    </a>
+                    <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="pay-btn">
+                        👥 Concierge Review ($99)
+                    </a>
+                </div>
+                <p class="preview-note">You're seeing a preview. Get the full breakdown with explanations and what to do next.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('conversation');
+        const charCount = document.getElementById('charCount');
+        
+        textarea.addEventListener('input', () => {
+            charCount.textContent = textarea.value.length;
+        });
+        
+        const scammerSignals = {
+            high: [
+                { pattern: /love you|miss you|can't live without you/i, name: "Love bombing", desc: "Intense romantic language too early" },
+                { pattern: /whatsapp|telegram|wechat|signal|move to/i, name: "Platform shift", desc: "Pushing off dating app quickly" },
+                { pattern: /money|send|payment|wire|bank|crypto|bitcoin|investment/i, name: "Money request", desc: "Any request for funds or investing" },
+                { pattern: /crypto|trading|investment opportunity|make money|passive income/i, name: "Investment pitch", desc: "Crypto or trading platform promotion" },
+                { pattern: /deployed|military|base|soldier|contractor|overseas|abroad/i, name: "Military backstory", desc: "Unverifiable military excuse" },
+                { pattern: /custom|tax|fee|clearance|transfer|urgent|emergency/i, name: "Fee/urgency request", desc: "Money needed for fees or urgent situation" },
+            ],
+            medium: [
+                { pattern: /don't have video|can't video|no camera|phone broken|wifi bad|no signal/i, name: "Video avoidance", desc: "Excuses not to video call" },
+                { pattern: /so beautiful|gorgeous|stunning|perfect|fall for you|attracted|handsome/i, name: "Physical compliments", desc: "Excessive compliments early on" },
+                { pattern: /i'm sorry|forgive me|mistake|misunderstanding|trust me/i, name: "Over-apologizing", desc: "Defensive language patterns" },
+                { pattern: /tell no one|keep secret|don't tell|private|between us/i, name: "Secrecy requests", desc: "Asking to keep relationship hidden" },
+            ],
+            low: [
+                { pattern: /can't wait|so excited|amazing|wonderful|incredible/i, name: "Overly enthusiastic", desc: "Enthusiasm without substance" },
+                { pattern: /working|busy|meetings|project|deadline/i, name: "Vague busy excuses", desc: "Not providing real details about life" },
+            ]
+        };
+        
+        function analyzeConversation() {
+            const text = textarea.value.trim();
+            
+            if (!text || text.length < 20) {
+                alert('Please paste a longer conversation (at least 20 characters)');
+                return;
+            }
+            
+            const foundSignals = {
+                high: [],
+                medium: [],
+                low: []
+            };
+            
+            // Find all signals
+            for (const level in scammerSignals) {
+                for (const signal of scammerSignals[level]) {
+                    if (signal.pattern.test(text)) {
+                        foundSignals[level].push(signal);
+                    }
+                }
+            }
+            
+            // Calculate score
+            const highCount = foundSignals.high.length;
+            const mediumCount = foundSignals.medium.length;
+            const lowCount = foundSignals.low.length;
+            
+            const baseScore = (highCount * 25) + (mediumCount * 10) + (lowCount * 3);
+            const score = Math.min(100, baseScore);
+            
+            // Determine risk level
+            let riskLevel = "low";
+            let riskColor = "risk-low";
+            let riskText = "✅ Low Risk";
+            if (score >= 60) {
+                riskLevel = "high";
+                riskColor = "risk-high";
+                riskText = "🚨 High Risk";
+            } else if (score >= 35) {
+                riskLevel = "medium";
+                riskColor = "risk-medium";
+                riskText = "⚠️ Medium Risk";
+            }
+            
+            // Display results
+            document.getElementById('scoreNumber').textContent = score;
+            document.getElementById('scoreNumber').className = riskColor;
+            document.getElementById('riskLabel').textContent = riskText;
+            
+            let explanation = "";
+            if (score >= 60) {
+                explanation = "Multiple high-risk signals detected. Proceed with extreme caution.";
+            } else if (score >= 35) {
+                explanation = "Some concerning patterns found. Verify before proceeding.";
+            } else {
+                explanation = "No major red flags detected, but stay alert.";
+            }
+            document.getElementById('riskExplain').textContent = explanation;
+            
+            // Display signals
+            let signalsHTML = '<div style="margin-bottom: 15px;"><strong>Signals Found:</strong></div>';
+            
+            if (foundSignals.high.length > 0) {
+                signalsHTML += '<div style="margin-bottom: 10px;"><span style="color: #ef4444; font-weight: 600; font-size: 13px;">HIGH RISK</span></div>';
+                for (const sig of foundSignals.high) {
+                    signalsHTML += `<div class="signal-item"><strong>${sig.name}</strong><div class="signal-text">${sig.desc}</div></div>`;
+                }
+            }
+            
+            if (foundSignals.medium.length > 0) {
+                signalsHTML += '<div style="margin: 15px 0 10px 0;"><span style="color: #eab308; font-weight: 600; font-size: 13px;">MEDIUM RISK</span></div>';
+                for (const sig of foundSignals.medium) {
+                    signalsHTML += `<div class="signal-item medium"><strong>${sig.name}</strong><div class="signal-text">${sig.desc}</div></div>`;
+                }
+            }
+            
+            if (foundSignals.low.length > 0) {
+                signalsHTML += '<div style="margin: 15px 0 10px 0;"><span style="color: #22c55e; font-weight: 600; font-size: 13px;">LOW RISK</span></div>';
+                for (const sig of foundSignals.low) {
+                    signalsHTML += `<div class="signal-item low"><strong>${sig.name}</strong><div class="signal-text">${sig.desc}</div></div>`;
+                }
+            }
+            
+            if (foundSignals.high.length === 0 && foundSignals.medium.length === 0 && foundSignals.low.length === 0) {
+                signalsHTML += '<div style="color: #666; font-style: italic;">No recognized scammer patterns detected in this conversation.</div>';
+            }
+            
+            document.getElementById('signalsFound').innerHTML = signalsHTML;
+            
+            // Show paywall
+            document.getElementById('paywall').classList.add('show');
+            document.getElementById('results').classList.add('show');
+            
+            // Start timer
+            startTimer();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        let timerInterval;
+        function startTimer() {
+            let secondsLeft = 600; // 10 minutes
+            
+            function updateDisplay() {
+                const minutes = Math.floor(secondsLeft / 60);
+                const seconds = secondsLeft % 60;
+                document.getElementById('timerDisplay').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('paywall').style.opacity = '0.6';
+                }
+                
+                secondsLeft--;
+            }
+            
+            updateDisplay();
+            timerInterval = setInterval(updateDisplay, 1000);
+        }
+    </script>
+</body>
+</html>
