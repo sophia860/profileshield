@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Reality Checker — Are These Photos Real?</title>
+    <meta name="description" content="Learn how to verify if someone's photos are real or stolen. Step-by-step guide.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f15;
+            color: #e0e0e8;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        h1 { font-size: 24px; margin-bottom: 8px; color: #fff; }
+        .subtitle { font-size: 14px; color: #999; }
+        .step {
+            background: #1a1a22;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .step h3 { font-size: 16px; margin-bottom: 12px; color: #d4a574; }
+        .step p { font-size: 13px; color: #999; margin-bottom: 12px; line-height: 1.7; }
+        .step ul { padding-left: 20px; font-size: 13px; color: #ccc; }
+        .step li { margin: 8px 0; }
+        .tool-btn {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #d4a574;
+            color: #000;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px 0;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+        }
+        .tool-btn:hover { background: #e8c4a0; }
+        .check-button {
+            width: 100%;
+            padding: 16px;
+            margin-top: 20px;
+            background: #d4a574;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .check-button:hover { background: #e8c4a0; }
+        .result { margin-top: 30px; }
+        .paywall {
+            background: #1a1a22;
+            border: 1px solid #d4a574;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .paywall h3 { margin-bottom: 10px; color: #d4a574; }
+        .paywall p { font-size: 13px; color: #999; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📸 Photo Reality Checker</h1>
+            <p class="subtitle">Are these photos real or stolen?</p>
+        </header>
+
+        <div class="step">
+            <h3>🔍 Step 1: Reverse Image Search</h3>
+            <p>This is the fastest way to check if a photo is stolen or used by someone else.</p>
+            <ul>
+                <li><strong>Google Images:</strong> Right-click the photo → "Search image with Google"</li>
+                <li><strong>TinEye.com:</strong> Upload or paste the photo URL</li>
+                <li><strong>Yandex (yandex.com/images):</strong> Drag the photo into the search box</li>
+            </ul>
+            <p style="margin-top: 12px; color: #f87171;"><strong>Red flag:</strong> If the same face appears under 3+ different names on different sites, it's stolen.</p>
+        </div>
+
+        <div class="step">
+            <h3>📅 Step 2: Check Photo Metadata</h3>
+            <p>Real photos have hidden metadata. Stolen photos were downloaded and re-saved.</p>
+            <ul>
+                <li><strong>Windows:</strong> Right-click photo → Properties → Details tab. Look for "Date Taken"</li>
+                <li><strong>Mac:</strong> Select photo → CMD+I (Get Info) → More Info → Date taken</li>
+                <li><strong>Online tool:</strong> Visit <a href="https://www.metadata2go.com" style="color: #d4a574;">metadata2go.com</a></li>
+            </ul>
+            <p style="margin-top: 12px; color: #f87171;"><strong>Red flag:</strong> "Date Taken" is years old but they say it was just taken. Photo was downloaded.</p>
+        </div>
+
+        <div class="step">
+            <h3>🤖 Step 3: Check for AI-Generated Faces</h3>
+            <p>Recent scam trend: AI-generated fake faces that don't exist. Try these free tools:</p>
+            <ul>
+                <li><strong>This Person Does Not Exist:</strong> <a href="https://www.thispersondoesnotexist.com" style="color: #d4a574;">thispersondoesnotexist.com</a> — compare generated faces to their photos</li>
+                <li><strong>AI Face Detector:</strong> <a href="https://www.sensetime.com/en" style="color: #d4a574;">sensetime.com</a> or similar</li>
+            </ul>
+            <p style="margin-top: 12px; color: #f87171;"><strong>Red flag:</strong> Teeth are too perfect, eyes too symmetrical, background blurry/strange, or they can never do a live video.</p>
+        </div>
+
+        <div class="step">
+            <h3>✅ Step 4: Ask for Proof</h3>
+            <p>The best verification is a live video. If they refuse, that's your answer.</p>
+            <ul>
+                <li>Ask for a selfie holding a piece of paper with your name and today's date</li>
+                <li>Ask for a 2-minute live video call (FaceTime, WhatsApp, Zoom)</li>
+                <li>Ask them to move around or show their surroundings</li>
+            </ul>
+            <p style="margin-top: 12px; color: #4ade80;"><strong>Good sign:</strong> They do this immediately without hesitation.</p>
+        </div>
+
+        <div class="step">
+            <h3>⚠️ Pattern Check</h3>
+            <p>One red flag isn't definitive. But if you've found:</p>
+            <ul>
+                <li>✅ Reverse image search shows the photo stolen</li>
+                <li>✅ Metadata is years old</li>
+                <li>✅ They refuse live video</li>
+            </ul>
+            <p style="margin-top: 12px; color: #f87171;"><strong>Stop. This person is not real.</strong></p>
+        </div>
+
+        <button class="check-button" onclick="gotoDetector()">Check with Full Catfish Detector →</button>
+
+        <div class="paywall">
+            <h3>Need help analyzing YOUR situation?</h3>
+            <p>Get a personalized risk assessment in 2 minutes</p>
+            <a href="https://sophia860.github.io/profileshield/" class="tool-btn">Use Catfish Detector</a>
+            <a href="https://sophia860.github.io/profileshield/check-scam.html" class="tool-btn">Full Scam Check</a>
+        </div>
+    </div>
+
+    <script>
+        function gotoDetector() {
+            window.location.href = 'https://sophia860.github.io/profileshield/catfish-detector.html';
+        }
+    </script>
+</body>
+</html>
