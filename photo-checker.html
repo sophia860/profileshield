@@ -3,448 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Is This Photo Real? Free Dating Photo Verification Tool</title>
-    <meta name="description" content="Free tool to check if dating profile photos are real, stolen, or AI-generated. Spot catfish in 2 minutes.">
+    <title>Photo Authenticity Checker - Is This Photo Real?</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
             color: #e0e0e0;
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
         }
-        
         .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: rgba(20, 25, 45, 0.9);
-            border: 1px solid rgba(100, 150, 255, 0.3);
-            border-radius: 12px;
-            padding: 40px 30px;
+            width: 100%;
+            max-width: 500px;
+            background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(100, 200, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
-        
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
-        
         .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #6496ff, #b366ff);
+            font-size: 24px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #64c8ff, #4a9cff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
         .header p {
-            font-size: 14px;
             color: #a0a0a0;
-            margin-bottom: 20px;
-        }
-        
-        .timer {
-            text-align: center;
-            font-size: 12px;
-            color: #ff6b6b;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-        
-        .question-block {
-            margin-bottom: 28px;
-        }
-        
-        .question-text {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #ffffff;
-        }
-        
-        .option {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            background: rgba(40, 50, 80, 0.6);
-            border: 1px solid rgba(100, 150, 255, 0.2);
-            border-radius: 8px;
-            color: #e0e0e0;
-            cursor: pointer;
-            transition: all 0.3s ease;
             font-size: 14px;
         }
-        
-        .option:hover {
-            background: rgba(100, 150, 255, 0.15);
-            border-color: rgba(100, 150, 255, 0.5);
-        }
-        
-        .option.selected {
-            background: rgba(100, 150, 255, 0.3);
-            border-color: #6496ff;
-        }
-        
         .progress-bar {
-            width: 100%;
             height: 4px;
-            background: rgba(100, 150, 255, 0.1);
+            background: rgba(100, 200, 255, 0.1);
             border-radius: 2px;
-            margin-bottom: 30px;
+            margin: 24px 0;
             overflow: hidden;
         }
-        
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #6496ff, #b366ff);
+            background: linear-gradient(90deg, #64c8ff, #4a9cff);
+            width: 0%;
             transition: width 0.3s ease;
         }
-        
-        .button-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 30px;
-        }
-        
-        button {
-            flex: 1;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-next {
-            background: linear-gradient(135deg, #6496ff, #5080dd);
-            color: white;
-            opacity: 0.5;
-        }
-        
-        .btn-next:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .btn-next:not(:disabled) {
-            opacity: 1;
-        }
-        
-        .btn-next:not(:disabled):hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(100, 150, 255, 0.4);
-        }
-        
-        .result-section {
-            text-align: center;
-            padding: 30px 0;
-        }
-        
-        .result-section h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #6496ff, #b366ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .risk-score {
-            font-size: 48px;
-            font-weight: 700;
-            margin: 20px 0;
-            color: #ffffff;
-        }
-        
-        .risk-level {
-            font-size: 18px;
-            font-weight: 600;
+        .question-container { display: none; }
+        .question-container.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .question-text {
+            font-size: 16px;
+            font-weight: 500;
             margin-bottom: 20px;
+            line-height: 1.5;
         }
-        
-        .risk-level.high {
-            color: #ff6b6b;
-        }
-        
-        .risk-level.medium {
-            color: #ffa500;
-        }
-        
-        .risk-level.low {
-            color: #4ade80;
-        }
-        
-        .paywall {
-            background: rgba(100, 150, 255, 0.1);
-            border: 1px solid rgba(100, 150, 255, 0.3);
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            filter: blur(4px);
-            pointer-events: none;
-        }
-        
-        .paywall-message {
-            filter: blur(0);
-            pointer-events: auto;
-            font-size: 14px;
-            color: #a0a0a0;
-            margin-bottom: 15px;
-        }
-        
-        .payment-buttons {
+        .options {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 15px;
         }
-        
-        .btn-pay {
-            padding: 14px 20px;
+        .option-btn {
+            padding: 14px 18px;
+            border: 2px solid rgba(100, 200, 255, 0.2);
+            background: rgba(100, 200, 255, 0.05);
+            color: #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .option-btn:hover {
+            border-color: rgba(100, 200, 255, 0.5);
+            background: rgba(100, 200, 255, 0.1);
+        }
+        .option-btn.selected {
+            border-color: #64c8ff;
+            background: rgba(100, 200, 255, 0.15);
+        }
+        .btn-next {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #64c8ff, #4a9cff);
+            color: white;
             border: none;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .btn-pay-29 {
-            background: linear-gradient(135deg, #6496ff, #5080dd);
-            color: white;
-        }
-        
-        .btn-pay-99 {
-            background: linear-gradient(135deg, #b366ff, #9944dd);
-            color: white;
-        }
-        
-        .btn-pay:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-        
-        .hidden {
+            margin-top: 24px;
+            transition: all 0.2s ease;
             display: none;
         }
+        .btn-next.show { display: block; }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(100, 200, 255, 0.2); }
+        .result-container { display: none; }
+        .result-container.show { display: block; animation: fadeIn 0.3s ease; }
+        .risk-score {
+            font-size: 48px;
+            font-weight: 700;
+            text-align: center;
+            margin: 24px 0;
+            background: linear-gradient(135deg, #64c8ff, #4a9cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .risk-label {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #e0e0e0;
+        }
+        .risk-low { color: #4caf50; }
+        .risk-medium { color: #ff9800; }
+        .risk-high { color: #f44336; }
+        .findings {
+            background: rgba(100, 200, 255, 0.05);
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid rgba(100, 200, 255, 0.3);
+        }
+        .finding-item {
+            padding: 8px 0;
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+        .finding-item strong { color: #e0e0e0; }
+        .paywall-blur {
+            background: linear-gradient(180deg, rgba(10, 14, 39, 0.3) 0%, rgba(10, 14, 39, 0.8) 60%, rgba(10, 14, 39, 1) 100%);
+            backdrop-filter: blur(4px);
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        .unlock-text {
+            color: #a0a0a0;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .unlock-btn {
+            display: inline-block;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #64c8ff, #4a9cff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 0 6px;
+            font-size: 14px;
+        }
+        .unlock-btn:hover { transform: translateY(-2px); }
+        .timer {
+            text-align: center;
+            color: #f44336;
+            font-size: 13px;
+            margin-top: 12px;
+            font-weight: 600;
+        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 Photo Checker</h1>
-            <p>Is this dating profile photo real or stolen?</p>
+            <h1>🔍 Photo Check</h1>
+            <p>Is this photo real or stolen?</p>
         </div>
-        
-        <div class="timer" id="timer"></div>
+
         <div class="progress-bar">
             <div class="progress-fill" id="progress"></div>
         </div>
-        
-        <div id="quiz-section">
-            <div class="question-block" id="question-container"></div>
-            <div class="button-group">
-                <button class="btn-next" id="btn-next" disabled>Next</button>
+
+        <!-- Questions -->
+        <div class="question-container active" data-q="1">
+            <div class="question-text">Have you reverse image searched these photos?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">No, not yet</button>
+                <button class="option-btn" data-score="5">Yes, found 2-3 other profiles with same photo</button>
+                <button class="option-btn" data-score="10">Yes, photo is from a stock site or totally different person</button>
             </div>
         </div>
-        
-        <div id="result-section" class="result-section hidden">
-            <h2>Your Photo Risk Score</h2>
-            <div class="risk-score" id="score">0/100</div>
-            <div class="risk-level" id="risk-label">Low Risk</div>
-            <p id="risk-message" style="margin-bottom: 20px; color: #a0a0a0; font-size: 14px;"></p>
-            
-            <div class="paywall">
-                <div style="padding: 20px; color: #e0e0e0;">
-                    <strong>📊 Full Signal Breakdown</strong>
-                    <p style="margin: 10px 0 0 0; font-size: 13px;">AI deepfake analysis, photo metadata details, reverse search findings, platform analysis</p>
-                </div>
+
+        <div class="question-container" data-q="2">
+            <div class="question-text">Do the photos look too perfect / too good to be true?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">No, they look natural and realistic</button>
+                <button class="option-btn" data-score="4">Maybe — they're all professionally lit and edited</button>
+                <button class="option-btn" data-score="8">Yes — model-quality, heavily filtered, unrealistic</button>
             </div>
-            
-            <div class="paywall-message">
-                Unlock the full analysis to see exactly which signals triggered
+        </div>
+
+        <div class="question-container" data-q="3">
+            <div class="question-text">Check the photo metadata. What's the "Date Taken"?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">Within the last 2 weeks</button>
+                <button class="option-btn" data-score="3">1-6 months old</button>
+                <button class="option-btn" data-score="7">Over 1 year old OR no date available</button>
             </div>
+        </div>
+
+        <div class="question-container" data-q="4">
+            <div class="question-text">Are all their photos different, or mostly the same photo repeated?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">Variety of different photos, natural progression</button>
+                <button class="option-btn" data-score="3">Some variety but a few photos used multiple times</button>
+                <button class="option-btn" data-score="8">Same 2-3 professional photos, no variation</button>
+            </div>
+        </div>
+
+        <div class="question-container" data-q="5">
+            <div class="question-text">Do the photos match their real-time appearance when you video call?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">Yes, very similar in person/on video</button>
+                <button class="option-btn" data-score="4">Sort of — some differences in lighting/angle</button>
+                <button class="option-btn" data-score="8">No — they look noticeably different OR they refuse video calls</button>
+            </div>
+        </div>
+
+        <button class="btn-next" id="btnNext">Next</button>
+
+        <!-- Results -->
+        <div class="result-container" id="resultContainer">
+            <div class="risk-label">Photo Authenticity Score</div>
+            <div class="risk-score" id="riskScore">—</div>
             
-            <div class="payment-buttons">
-                <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="btn-pay btn-pay-29">Get Full Report — $29</a>
-                <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="btn-pay btn-pay-99">Concierge Analysis — $99</a>
+            <div id="riskMessage"></div>
+
+            <div class="findings" id="findings"></div>
+
+            <div class="paywall-blur">
+                <div class="unlock-text">🔒 Full analysis unlocked for members</div>
+                <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="unlock-btn">Full Report $29</a>
+                <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="unlock-btn">Concierge $99</a>
+                <div class="timer">⏱️ Limited time offer</div>
             </div>
         </div>
     </div>
-    
+
     <script>
-        const questions = [
-            {
-                text: "Where did you meet this person?",
-                answers: [
-                    { text: "Dating app (Tinder, Bumble, etc)", points: 0 },
-                    { text: "Instagram or social media", points: 5 },
-                    { text: "Online platform (Seeking, Discord, etc)", points: 3 }
-                ]
-            },
-            {
-                text: "How professional or polished do the photos look?",
-                answers: [
-                    { text: "Natural, mixed quality, some blurry", points: 0 },
-                    { text: "All professional quality, like a model", points: 15 },
-                    { text: "Very good but slightly unrealistic", points: 10 }
-                ]
-            },
-            {
-                text: "When you reverse image searched the main photo, what happened?",
-                answers: [
-                    { text: "No results or only appeared on this profile", points: 0 },
-                    { text: "Appeared on other dating profiles with different names", points: 20 },
-                    { text: "Appeared on Instagram or modeling sites", points: 18 }
-                ]
-            },
-            {
-                text: "What does the photo metadata show (Date Taken vs today)?",
-                answers: [
-                    { text: "Recently taken or can't check", points: 0 },
-                    { text: "Date Taken is years old, modified recently", points: 16 },
-                    { text: "Unknown or no metadata available", points: 5 }
-                ]
-            },
-            {
-                text: "How consistent are the photos across the profile?",
-                answers: [
-                    { text: "Consistent — same person, different angles/times", points: 0 },
-                    { text: "Inconsistent — looks like different people", points: 14 },
-                    { text: "All photos look extremely similar, almost copied", points: 12 }
-                ]
-            },
-            {
-                text: "Can you find this person on other social platforms?",
-                answers: [
-                    { text: "Yes, on Instagram, Facebook, LinkedIn", points: 0 },
-                    { text: "No — this is their only presence online", points: 12 },
-                    { text: "Found them but the accounts seem new/suspicious", points: 10 }
-                ]
-            },
-            {
-                text: "Have they sent you additional photos when asked?",
-                answers: [
-                    { text: "Yes, multiple photos including unposed ones", points: 0 },
-                    { text: "No — they avoid sending new photos", points: 14 },
-                    { text: "Only pre-existing profile photos", points: 10 }
-                ]
-            },
-            {
-                text: "How do the photos compare to how they describe themselves?",
-                answers: [
-                    { text: "Match their description perfectly", points: 0 },
-                    { text: "Photos look significantly different from their story", points: 13 },
-                    { text: "Slightly inconsistent but could be lighting/angles", points: 6 }
-                ]
-            }
-        ];
-        
-        let currentQuestion = 0;
+        let currentQuestion = 1;
+        let totalQuestions = 5;
         let score = 0;
-        let selectedAnswer = null;
-        const startTime = Date.now();
-        const maxTime = 10 * 60 * 1000; // 10 minutes
-        
-        function startTimer() {
-            setInterval(() => {
-                const elapsed = Date.now() - startTime;
-                const remaining = maxTime - elapsed;
-                
-                if (remaining <= 0) {
-                    document.getElementById('timer').textContent = '⏰ Time expired. Results locked.';
-                    document.getElementById('timer').style.color = '#ff6b6b';
-                    document.getElementById('btn-next').disabled = true;
-                } else {
-                    const minutes = Math.floor(remaining / 60000);
-                    const seconds = Math.floor((remaining % 60000) / 1000);
-                    document.getElementById('timer').textContent = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')} remaining`;
-                }
-            }, 1000);
-        }
-        
-        function renderQuestion() {
-            const q = questions[currentQuestion];
-            const container = document.getElementById('question-container');
-            
-            const html = `
-                <div class="question-text">${currentQuestion + 1}. ${q.text}</div>
-                <div>
-                    ${q.answers.map((ans, idx) => `
-                        <button class="option" data-index="${idx}">${ans.text}</button>
-                    `).join('')}
-                </div>
-            `;
-            
-            container.innerHTML = html;
-            
-            document.querySelectorAll('.option').forEach((btn, idx) => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.option').forEach(b => b.classList.remove('selected'));
-                    btn.classList.add('selected');
-                    selectedAnswer = idx;
-                    document.getElementById('btn-next').disabled = false;
-                });
+        let answers = {};
+
+        const questions = [
+            { text: 'reverse_image_search', scores: [0, 5, 10] },
+            { text: 'photo_quality', scores: [0, 4, 8] },
+            { text: 'metadata', scores: [0, 3, 7] },
+            { text: 'photo_variety', scores: [0, 3, 8] },
+            { text: 'video_match', scores: [0, 4, 8] }
+        ];
+
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll(`[data-q="${currentQuestion}"] .option-btn`).forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                score += parseInt(this.dataset.score);
+                answers[currentQuestion] = this.textContent;
+                document.getElementById('btnNext').classList.add('show');
             });
-            
-            updateProgress();
-        }
-        
-        function updateProgress() {
-            const progress = ((currentQuestion + 1) / questions.length) * 100;
-            document.getElementById('progress').style.width = progress + '%';
-        }
-        
-        function showResults() {
-            const level = score <= 25 ? 'Low Risk' : score <= 60 ? 'Medium Risk' : 'High Risk';
-            const levelClass = score <= 25 ? 'low' : score <= 60 ? 'medium' : 'high';
-            const message = score <= 25 
-                ? 'This photo appears authentic. Proceed with normal caution.'
-                : score <= 60
-                ? 'Some signals suggest the photo may be altered or outdated. Verify with video call.'
-                : 'Multiple red flags. High probability the photos are stolen or the person is not who they claim. Do not proceed.';
-            
-            document.getElementById('quiz-section').classList.add('hidden');
-            document.getElementById('result-section').classList.remove('hidden');
-            
-            document.getElementById('score').textContent = score + '/100';
-            document.getElementById('risk-label').textContent = level;
-            document.getElementById('risk-label').className = 'risk-level ' + levelClass;
-            document.getElementById('risk-message').textContent = message;
-        }
-        
-        document.getElementById('btn-next').addEventListener('click', () => {
-            if (selectedAnswer !== null) {
-                score += questions[currentQuestion].answers[selectedAnswer].points;
+        });
+
+        document.getElementById('btnNext').addEventListener('click', () => {
+            if (currentQuestion < totalQuestions) {
+                document.querySelector(`[data-q="${currentQuestion}"]`).classList.remove('active');
                 currentQuestion++;
-                selectedAnswer = null;
-                
-                if (currentQuestion >= questions.length) {
-                    showResults();
-                } else {
-                    renderQuestion();
-                }
+                document.querySelector(`[data-q="${currentQuestion}"]`).classList.add('active');
+                document.getElementById('btnNext').classList.remove('show');
+                document.getElementById('progress').style.width = (currentQuestion / totalQuestions * 100) + '%';
+            } else {
+                showResults();
             }
         });
-        
-        // Initialize
-        renderQuestion();
-        startTimer();
+
+        function showResults() {
+            document.querySelectorAll('.question-container').forEach(q => q.classList.remove('active'));
+            document.getElementById('btnNext').classList.remove('show');
+            document.getElementById('resultContainer').classList.add('show');
+
+            let riskLevel = '';
+            let riskColor = '';
+            if (score <= 12) {
+                riskLevel = 'LOW RISK — Likely Genuine';
+                riskColor = 'risk-low';
+            } else if (score <= 25) {
+                riskLevel = 'MEDIUM RISK — Some Concerns';
+                riskColor = 'risk-medium';
+            } else {
+                riskLevel = 'HIGH RISK — Likely Fake';
+                riskColor = 'risk-high';
+            }
+
+            document.getElementById('riskScore').textContent = score;
+            document.getElementById('riskMessage').innerHTML = `<div class="risk-label ${riskColor}">${riskLevel}</div>`;
+
+            let findings = '<strong>What we found:</strong><br>';
+            if (answers[1]) findings += `<div class="finding-item">• Reverse image search: ${answers[1]}</div>`;
+            if (answers[2]) findings += `<div class="finding-item">• Photo quality: ${answers[2]}</div>`;
+            if (answers[3]) findings += `<div class="finding-item">• Photo metadata: ${answers[3]}</div>`;
+            if (answers[4]) findings += `<div class="finding-item">• Photo variety: ${answers[4]}</div>`;
+            if (answers[5]) findings += `<div class="finding-item">• Video verification: ${answers[5]}</div>`;
+
+            document.getElementById('findings').innerHTML = findings;
+        }
     </script>
 </body>
 </html>
