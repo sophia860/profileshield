@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catfish Detector — Is This Person Really Who They Say They Are?</title>
+    <meta name="description" content="Free tool to detect if someone is catfishing you. Check 8 key signals in 2 minutes.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f15;
+            color: #e0e0e8;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        h1 { font-size: 24px; margin-bottom: 8px; color: #fff; }
+        .subtitle { font-size: 14px; color: #999; }
+        .tool-section { margin: 30px 0; }
+        .question {
+            background: #1a1a22;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .question h3 { font-size: 16px; margin-bottom: 12px; color: #fff; }
+        .question p { font-size: 13px; color: #999; margin-bottom: 15px; }
+        .options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .option-btn {
+            flex: 1;
+            min-width: 45%;
+            padding: 12px;
+            border: 1px solid #444;
+            background: #0f0f15;
+            color: #e0e0e8;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .option-btn:hover { border-color: #666; background: #1a1a22; }
+        .option-btn.selected { background: #d4a574; color: #000; border-color: #d4a574; }
+        .result-section {
+            background: #1a1a22;
+            border: 1px solid #d4a574;
+            border-radius: 8px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+        .result-section.show { display: block; }
+        .score { font-size: 48px; font-weight: bold; color: #d4a574; margin: 20px 0; }
+        .risk-label { font-size: 20px; margin-bottom: 15px; }
+        .risk-low { color: #4ade80; }
+        .risk-medium { color: #facc15; }
+        .risk-high { color: #f87171; }
+        .breakdown {
+            text-align: left;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            filter: blur(8px);
+        }
+        .paywall {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(212, 165, 116, 0.1);
+            border-radius: 6px;
+        }
+        .paywall p { font-size: 13px; color: #999; margin-bottom: 12px; }
+        .pay-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #d4a574;
+            color: #000;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 5px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+        .pay-btn:hover { background: #e8c4a0; }
+        .timer {
+            font-size: 12px;
+            color: #f87171;
+            margin-top: 10px;
+        }
+        button { font-family: inherit; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Catfish Detector</h1>
+            <p class="subtitle">Is this person really who they say they are?</p>
+        </header>
+
+        <div class="tool-section" id="questions">
+            <!-- Questions will be inserted here -->
+        </div>
+
+        <div class="result-section" id="result">
+            <h2>Your Catfish Risk Score</h2>
+            <div class="score" id="scoreValue">0%</div>
+            <div class="risk-label" id="riskLabel"></div>
+            
+            <div class="breakdown" id="breakdown">
+                <h3>What this means:</h3>
+                <p id="explanation"></p>
+                <p><strong>Next steps:</strong></p>
+                <ul id="steps" style="text-align: left; margin: 10px 0; padding-left: 20px;">
+                </ul>
+            </div>
+
+            <div class="paywall">
+                <p>👆 See the full breakdown above (blurred)</p>
+                <p style="margin-bottom: 15px;"><strong>Unlock for $29</strong></p>
+                <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="pay-btn">Get Full Report</a>
+                <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="pay-btn" style="background: #666;">Concierge ($99)</a>
+                <div class="timer">
+                    ⏱️ Offer expires in <span id="countdown">10:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                title: "Do their photos all look like they could be from a professional photoshoot?",
+                description: "Real people have casual photos mixed with good ones. Scammers often use professional or stolen images.",
+                options: ["All photos look professionally shot", "Mix of casual and good photos", "Mostly candid photos"],
+                points: [15, 0, 0]
+            },
+            {
+                title: "When you reverse image search their main photo, what comes up?",
+                description: "Use Google Images, TinEye, or Yandex to check if the photo appears under different names elsewhere.",
+                options: ["Photo appears under other names/profiles", "Same person, different accounts of theirs", "Photo doesn't appear elsewhere"],
+                points: [20, 5, 0]
+            },
+            {
+                title: "How often can they do a live unscripted video call?",
+                description: "Real people can do spontaneous video. Scammers have endless excuses.",
+                options: ["They always have an excuse", "Occasionally, but with delays", "Regularly, on their terms"],
+                points: [18, 5, 0]
+            },
+            {
+                title: "Do their stories have inconsistencies?",
+                description: "They told you they live in NYC but mentioned going to the office in LA three times?",
+                options: ["Multiple contradictions I've noticed", "A couple small inconsistencies", "Everything adds up"],
+                points: [12, 3, 0]
+            },
+            {
+                title: "How do they respond when you ask for verification?",
+                description: "Ask them to take a selfie holding a piece of paper with your name and today's date.",
+                options: ["They refuse or change the subject", "They make an excuse (too awkward, no camera, etc)", "They do it immediately"],
+                points: [16, 8, 0]
+            },
+            {
+                title: "Did they push to move off the dating app quickly?",
+                description: "Within days to WhatsApp, Telegram, or email?",
+                options: ["Yes, within first week", "After a few weeks of chatting", "We've stayed on the app"],
+                points: [10, 2, 0]
+            },
+            {
+                title: "How quickly did they say 'I love you' or get intense?",
+                description: "Real relationships build. Scammers rush emotional bonding.",
+                options: ["Within first few messages", "After 1-2 weeks", "After weeks or months"],
+                points: [14, 6, 0]
+            },
+            {
+                title: "Do they avoid real-world plans?",
+                description: "You've suggested meeting or doing something real, and they always have a reason why not.",
+                options: ["Always has a reason why not", "Sometimes delays, gives reasons", "We've made concrete plans"],
+                points: [15, 3, 0]
+            }
+        ];
+
+        const riskLevels = {
+            low: { label: "LOW RISK — Likely Genuine", color: 'risk-low' },
+            medium: { label: "MEDIUM RISK — Red Flags Present", color: 'risk-medium' },
+            high: { label: "HIGH RISK — Likely Catfishing", color: 'risk-high' }
+        };
+
+        let scores = {};
+
+        function renderQuestions() {
+            const container = document.getElementById('questions');
+            questions.forEach((q, idx) => {
+                const qEl = document.createElement('div');
+                qEl.className = 'question';
+                qEl.innerHTML = `
+                    <h3>${idx + 1}. ${q.title}</h3>
+                    <p>${q.description}</p>
+                    <div class="options" id="options-${idx}">
+                        ${q.options.map((opt, oIdx) => `
+                            <button class="option-btn" onclick="selectOption(${idx}, ${oIdx}, ${q.points[oIdx]})">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(qEl);
+            });
+        }
+
+        function selectOption(qIdx, optIdx, points) {
+            scores[qIdx] = points;
+            const buttons = document.querySelectorAll(`#options-${qIdx} .option-btn`);
+            buttons.forEach((btn, idx) => {
+                btn.classList.toggle('selected', idx === optIdx);
+            });
+
+            if (Object.keys(scores).length === questions.length) {
+                setTimeout(showResult, 300);
+            }
+        }
+
+        function showResult() {
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            const maxScore = 120;
+            const percent = Math.round((total / maxScore) * 100);
+
+            let risk = 'low';
+            if (percent >= 70) risk = 'high';
+            else if (percent >= 40) risk = 'medium';
+
+            document.getElementById('scoreValue').textContent = percent + '%';
+            document.getElementById('riskLabel').className = 'risk-label ' + riskLevels[risk].color;
+            document.getElementById('riskLabel').textContent = riskLevels[risk].label;
+
+            const explanations = {
+                low: "This person shows most signs of being genuine. Few red flags detected. But keep your eyes open — catfishers can be convincing.",
+                medium: "Several warning signs. Could be innocent inconsistencies, or could be catfishing. Proceed with caution. Ask for verification.",
+                high: "Multiple catfish indicators. High probability this person is not who they say. Consider ending contact or asking for video verification."
+            };
+
+            document.getElementById('explanation').textContent = explanations[risk];
+
+            const steps = {
+                low: [
+                    "Trust your gut — if something feels off, it might be",
+                    "Still ask for a live video call before meeting in person",
+                    "Check their social media independently"
+                ],
+                medium: [
+                    "Ask them to take a selfie with a piece of paper (your name, today's date)",
+                    "Reverse image search their photos on Google, TinEye, Yandex",
+                    "Ask specific questions about their life — real people remember details"
+                ],
+                high: [
+                    "Stop financial or personal information sharing immediately",
+                    "Ask for live video verification — this will likely expose them",
+                    "Report the profile to the dating app",
+                    "Consider blocking and moving on"
+                ]
+            };
+
+            const stepsList = document.getElementById('steps');
+            stepsList.innerHTML = '';
+            steps[risk].forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                li.style.marginBottom = '8px';
+                stepsList.appendChild(li);
+            });
+
+            document.getElementById('result').classList.add('show');
+            startCountdown();
+            document.getElementById('questions').style.display = 'none';
+        }
+
+        function startCountdown() {
+            let time = 600;
+            setInterval(() => {
+                const mins = Math.floor(time / 60);
+                const secs = time % 60;
+                document.getElementById('countdown').textContent = 
+                    `${mins}:${secs.toString().padStart(2, '0')}`;
+                time--;
+            }, 1000);
+        }
+
+        renderQuestions();
+    </script>
+</body>
+</html>
