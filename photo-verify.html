@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfileShield: Photo Verification Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        .quiz-container {
+            display: none;
+        }
+        
+        .quiz-container.active {
+            display: block;
+        }
+        
+        .question {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .question-number {
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(71, 85, 105, 0.3);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background: rgba(71, 85, 105, 0.5);
+            border-color: rgba(148, 163, 184, 0.4);
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #06b6d4;
+        }
+        
+        .option-label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(148, 163, 184, 0.2);
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+            transition: width 0.3s;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-next {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+        }
+        
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+        }
+        
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-prev {
+            background: rgba(71, 85, 105, 0.3);
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .btn-prev:hover {
+            background: rgba(71, 85, 105, 0.5);
+        }
+        
+        .result-container {
+            display: none;
+        }
+        
+        .result-container.active {
+            display: block;
+        }
+        
+        .result-box {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+            border: 2px solid rgba(6, 182, 212, 0.5);
+        }
+        
+        .score-label {
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+        
+        .verdict {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .verdict-safe {
+            color: #10b981;
+        }
+        
+        .verdict-caution {
+            color: #f59e0b;
+        }
+        
+        .verdict-risk {
+            color: #ef4444;
+        }
+        
+        .explanation {
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-align: left;
+            background: rgba(71, 85, 105, 0.2);
+            padding: 20px;
+            border-radius: 6px;
+        }
+        
+        .blur-overlay {
+            position: relative;
+            background: rgba(71, 85, 105, 0.2);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        
+        .blur-content {
+            filter: blur(4px);
+            color: transparent;
+            user-select: none;
+        }
+        
+        .blur-text {
+            height: 60px;
+            background: rgba(148, 163, 184, 0.2);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .unlock-button {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        
+        .unlock-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+        }
+        
+        .price {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        .timer {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .btn-reset {
+            background: rgba(71, 85, 105, 0.3);
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            padding: 12px 20px;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .btn-reset:hover {
+            background: rgba(71, 85, 105, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🔍</div>
+            <h1>Photo Verification Check</h1>
+            <p class="subtitle">Spot fake or stolen photos in dating profiles</p>
+        </div>
+        
+        <div class="quiz-container active" id="quizContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <form id="quizForm">
+                <!-- Q1: Photo Metadata -->
+                <div class="question" id="q1">
+                    <div class="question-number">Question 1 of 7</div>
+                    <div class="question-text">Can you check the photo's metadata (when it was taken)?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q1" value="0">
+                            <span class="option-label">No, I don't know how</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="2">
+                            <span class="option-label">Yes, I checked Date Taken matches today's date</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="8">
+                            <span class="option-label">Yes, I checked and it's from months/years ago</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Q2: Reverse Image Search -->
+                <div class="question" id="q2">
+                    <div class="question-number">Question 2 of 7</div>
+                    <div class="question-text">Did you try reverse image searching one of their photos?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q2" value="0">
+                            <span class="option-label">No</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="2">
+                            <span class="option-label">Yes, no matches found</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="10">
+                            <span class="option-label">Yes, found the same photo used elsewhere</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Q3: Photo Quality -->
+                <div class="question" id="q3">
+                    <div class="question-number">Question 3 of 7</div>
+                    <div class="question-text">How would you describe the photo quality?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q3" value="0">
+                            <span class="option-label">Natural, candid, occasional blurry angles</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="3">
+                            <span class="option-label">Professional or very polished</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="7">
+                            <span class="option-label">Suspiciously perfect, looks like a model</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Q4: Stock Photo Markers -->
+                <div class="question" id="q4">
+                    <div class="question-number">Question 4 of 7</div>
+                    <div class="question-text">Do the photos look like they could be from a stock photo site?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q4" value="0">
+                            <span class="option-label">No, they look real and personal</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="4">
+                            <span class="option-label">Somewhat — very posed, generic backgrounds</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="9">
+                            <span class="option-label">Very much — could definitely be stock</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Q5: AI Detection -->
+                <div class="question" id="q5">
+                    <div class="question-number">Question 5 of 7</div>
+                    <div class="question-text">Do any photos have subtle AI-generated markers (odd hand details, blurry backgrounds, weird facial symmetry)?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q5" value="0">
+                            <span class="option-label">No, they look real</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="5">
+                            <span class="option-label">Maybe — hard to tell</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="12">
+                            <span class="option-label">Yes, definitely some AI signs</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Q6: Facial Consistency -->
+                <div class="question" id="q6">
+                    <div class="question-number">Question 6 of 7</div>
+                    <div class="question-text">Do all their photos show the same person?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q6" value="0">
+                            <span class="option-label">Yes, clearly the same person</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="6">
+                            <span class="option-label">Mostly, but some photos look like different angles/makeup</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="11">
+                            <span class="option-label">No, looks like different people</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Q7: Profile Age -->
+                <div class="question" id="q7">
+                    <div class="question-number">Question 7 of 7</div>
+                    <div class="question-text">How long has their profile been active?</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q7" value="0">
+                            <span class="option-label">Several months or longer</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="3">
+                            <span class="option-label">A few weeks</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="6">
+                            <span class="option-label">Less than a week (very new)</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="buttons">
+                    <button type="button" class="btn-prev" id="prevBtn" style="display: none;">← Back</button>
+                    <button type="button" class="btn-next" id="nextBtn">Next →</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="result-box">
+                <div class="score-circle" id="scoreCircle">0</div>
+                <div class="score-label">Photo Risk Score</div>
+                <div class="verdict" id="verdict">Analyzing...</div>
+                <div class="explanation" id="explanation"></div>
+                
+                <div class="blur-overlay">
+                    <div class="blur-text"></div>
+                    <div class="blur-text" style="width: 80%;"></div>
+                    <button class="unlock-button" onclick="window.location.href='https://www.paypal.com/ncp/payment/D88HW6GHPY346'">
+                        Unlock Full Report — $29
+                    </button>
+                    <div class="price">Includes detailed signal breakdown + next steps</div>
+                    <div class="timer" id="timer">⏱️ This offer expires in 10:00</div>
+                    <button class="unlock-button" onclick="window.location.href='https://www.paypal.com/ncp/payment/DD3J39FE8KFKG'" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                        Concierge Review — $99
+                    </button>
+                    <div class="price">I analyze the full conversation + give you my assessment</div>
+                </div>
+                
+                <button type="button" class="btn-reset" onclick="location.reload()">← Start Over</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentQuestion = 0;
+        const questions = 7;
+        let score = 0;
+        const answers = {};
+        
+        const verdicts = {
+            low: { text: '✅ Photos Look Legitimate', class: 'verdict-safe', explanation: 'Based on your responses, these photos appear authentic. The metadata aligns, reverse searches came up clean, and the visual markers match a real person.' },
+            medium: { text: '⚠️ Some Red Flags Present', class: 'verdict-caution', explanation: 'A few signals suggest caution. The photo quality, metadata issues, or reverse search results have some concern markers. Proceed with extra verification.' },
+            high: { text: '🚩 High Risk / Likely Fake', class: 'verdict-risk', explanation: 'Multiple red flags suggest these photos are either fake, stolen, or heavily edited. This person may not be who they claim.' }
+        };
+        
+        function showQuestion(n) {
+            const allQuestions = document.querySelectorAll('.question');
+            allQuestions.forEach(q => q.style.display = 'none');
+            allQuestions[n].style.display = 'block';
+            
+            document.getElementById('prevBtn').style.display = n > 0 ? 'block' : 'none';
+            document.getElementById('nextBtn').textContent = n === questions - 1 ? 'See Results' : 'Next →';
+            
+            const progress = ((n + 1) / questions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        document.getElementById('nextBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            const answer = document.querySelector(`input[name="q${currentQuestion + 1}"]:checked`);
+            if (!answer) {
+                alert('Please select an answer');
+                return;
+            }
+            answers[currentQuestion] = parseInt(answer.value);
+            
+            if (currentQuestion < questions - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            } else {
+                calculateScore();
+            }
+        });
+        
+        document.getElementById('prevBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        });
+        
+        function calculateScore() {
+            score = Object.values(answers).reduce((a, b) => a + b, 0);
+            
+            let verdict;
+            if (score <= 15) verdict = verdicts.low;
+            else if (score <= 35) verdict = verdicts.medium;
+            else verdict = verdicts.high;
+            
+            document.getElementById('quizContainer').classList.remove('active');
+            document.getElementById('resultContainer').classList.add('active');
+            document.getElementById('scoreCircle').textContent = score;
+            document.getElementById('verdict').textContent = verdict.text;
+            document.getElementById('verdict').className = 'verdict ' + verdict.class;
+            document.getElementById('explanation').textContent = verdict.explanation;
+            
+            startTimer();
+        }
+        
+        function startTimer() {
+            let timeLeft = 600;
+            const timerEl = document.getElementById('timer');
+            
+            const interval = setInterval(() => {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `⏱️ This offer expires in ${mins}:${secs.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timerEl.textContent = '⏱️ Offer expired';
+                }
+            }, 1000);
+        }
+        
+        showQuestion(0);
+    </script>
+</body>
+</html>
