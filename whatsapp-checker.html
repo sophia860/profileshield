@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Contact Verifier - Is This Person Real?</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(100, 200, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #64c8ff, #4a9cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #a0a0a0;
+            font-size: 14px;
+        }
+        .progress-bar {
+            height: 4px;
+            background: rgba(100, 200, 255, 0.1);
+            border-radius: 2px;
+            margin: 24px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #64c8ff, #4a9cff);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .question-container { display: none; }
+        .question-container.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .question-text {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-btn {
+            padding: 14px 18px;
+            border: 2px solid rgba(100, 200, 255, 0.2);
+            background: rgba(100, 200, 255, 0.05);
+            color: #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .option-btn:hover {
+            border-color: rgba(100, 200, 255, 0.5);
+            background: rgba(100, 200, 255, 0.1);
+        }
+        .option-btn.selected {
+            border-color: #64c8ff;
+            background: rgba(100, 200, 255, 0.15);
+        }
+        .btn-next {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #64c8ff, #4a9cff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s ease;
+            display: none;
+        }
+        .btn-next.show { display: block; }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(100, 200, 255, 0.2); }
+        .result-container { display: none; }
+        .result-container.show { display: block; animation: fadeIn 0.3s ease; }
+        .risk-score {
+            font-size: 48px;
+            font-weight: 700;
+            text-align: center;
+            margin: 24px 0;
+            background: linear-gradient(135deg, #64c8ff, #4a9cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .risk-label {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #e0e0e0;
+        }
+        .risk-low { color: #4caf50; }
+        .risk-medium { color: #ff9800; }
+        .risk-high { color: #f44336; }
+        .findings {
+            background: rgba(100, 200, 255, 0.05);
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid rgba(100, 200, 255, 0.3);
+        }
+        .finding-item {
+            padding: 8px 0;
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+        .finding-item strong { color: #e0e0e0; }
+        .paywall-blur {
+            background: linear-gradient(180deg, rgba(10, 14, 39, 0.3) 0%, rgba(10, 14, 39, 0.8) 60%, rgba(10, 14, 39, 1) 100%);
+            backdrop-filter: blur(4px);
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        .unlock-text {
+            color: #a0a0a0;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .unlock-btn {
+            display: inline-block;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #64c8ff, #4a9cff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 0 6px;
+            font-size: 14px;
+        }
+        .unlock-btn:hover { transform: translateY(-2px); }
+        .timer {
+            text-align: center;
+            color: #f44336;
+            font-size: 13px;
+            margin-top: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💬 WhatsApp Verify</h1>
+            <p>Is this WhatsApp contact real?</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+        <div class="question-container active" data-q="1">
+            <div class="question-text">Did they ask to move to WhatsApp quickly (within first day or two)?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">No, we naturally moved there after building trust</button>
+                <button class="option-btn" data-score="5">Yes, within a few days</button>
+                <button class="option-btn" data-score="10">Yes, immediately (first message)</button>
+            </div>
+        </div>
+
+        <div class="question-container" data-q="2">
+            <div class="question-text">Do they have a WhatsApp profile photo and "about" info visible?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">Yes, detailed profile with photo and bio</button>
+                <button class="option-btn" data-score="4">Minimal profile, just a generic photo</button>
+                <button class="option-btn" data-score="8">No profile photo or "nobody" privacy settings</button>
+            </div>
+        </div>
+
+        <div class="question-container" data-q="3">
+            <div class="question-text">How long have you been chatting on WhatsApp?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">Less than 1 week (still early)</button>
+                <button class="option-btn" data-score="0">1-4 weeks (building trust)</button>
+                <button class="option-btn" data-score="0">1-3 months (established)</button>
+            </div>
+        </div>
+
+        <div class="question-container" data-q="4">
+            <div class="question-text">Do they ever accept live video calls or send unscripted videos?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">Yes, we video call regularly</button>
+                <button class="option-btn" data-score="6">Sometimes, but with excuses (bad signal, broken camera)</button>
+                <button class="option-btn" data-score="12">Never — they always have reasons why not</button>
+            </div>
+        </div>
+
+        <div class="question-container" data-q="5">
+            <div class="question-text">Have they mentioned needing money or a business opportunity?</div>
+            <div class="options">
+                <button class="option-btn" data-score="0">No</button>
+                <button class="option-btn" data-score="8">Yes, they need help with something (fees, flights, etc.)</button>
+                <button class="option-btn" data-score="12">Yes, they want to show me how to make money (crypto, trading, etc.)</button>
+            </div>
+        </div>
+
+        <button class="btn-next" id="btnNext">Next</button>
+
+        <div class="result-container" id="resultContainer">
+            <div class="risk-label">WhatsApp Contact Risk Score</div>
+            <div class="risk-score" id="riskScore">—</div>
+            
+            <div id="riskMessage"></div>
+
+            <div class="findings" id="findings"></div>
+
+            <div class="paywall-blur">
+                <div class="unlock-text">🔒 Full analysis unlocked for members</div>
+                <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="unlock-btn">Full Report $29</a>
+                <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="unlock-btn">Concierge $99</a>
+                <div class="timer">⏱️ Limited time offer</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let totalQuestions = 5;
+        let score = 0;
+        let answers = {};
+
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll(`[data-q="${currentQuestion}"] .option-btn`).forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                score += parseInt(this.dataset.score);
+                answers[currentQuestion] = this.textContent;
+                document.getElementById('btnNext').classList.add('show');
+            });
+        });
+
+        document.getElementById('btnNext').addEventListener('click', () => {
+            if (currentQuestion < totalQuestions) {
+                document.querySelector(`[data-q="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion++;
+                document.querySelector(`[data-q="${currentQuestion}"]`).classList.add('active');
+                document.getElementById('btnNext').classList.remove('show');
+                document.getElementById('progress').style.width = (currentQuestion / totalQuestions * 100) + '%';
+            } else {
+                showResults();
+            }
+        });
+
+        function showResults() {
+            document.querySelectorAll('.question-container').forEach(q => q.classList.remove('active'));
+            document.getElementById('btnNext').classList.remove('show');
+            document.getElementById('resultContainer').classList.add('show');
+
+            let riskLevel = '';
+            let riskColor = '';
+            if (score <= 10) {
+                riskLevel = 'LOW RISK — Likely Genuine';
+                riskColor = 'risk-low';
+            } else if (score <= 20) {
+                riskLevel = 'MEDIUM RISK — Some Concerns';
+                riskColor = 'risk-medium';
+            } else {
+                riskLevel = 'HIGH RISK — Likely Fake';
+                riskColor = 'risk-high';
+            }
+
+            document.getElementById('riskScore').textContent = score;
+            document.getElementById('riskMessage').innerHTML = `<div class="risk-label ${riskColor}">${riskLevel}</div>`;
+
+            let findings = '<strong>What we found:</strong><br>';
+            if (answers[1]) findings += `<div class="finding-item">• Platform migration speed: ${answers[1]}</div>`;
+            if (answers[2]) findings += `<div class="finding-item">• Profile completeness: ${answers[2]}</div>`;
+            if (answers[4]) findings += `<div class="finding-item">• Video availability: ${answers[4]}</div>`;
+            if (answers[5]) findings += `<div class="finding-item">• Financial mentions: ${answers[5]}</div>`;
+
+            document.getElementById('findings').innerHTML = findings;
+        }
+    </script>
+</body>
+</html>
