@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Analyzer — Scam Detector</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a0033 100%);
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 700px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ff006e, #8338ec);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p {
+            color: #888;
+            font-size: 14px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .input-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #bbb;
+        }
+        textarea {
+            width: 100%;
+            height: 180px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #e0e0e0;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 13px;
+            resize: vertical;
+        }
+        textarea::placeholder { color: #666; }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ff006e, #8338ec);
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255, 0, 110, 0.3); }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+        .result {
+            display: none;
+            margin-top: 20px;
+        }
+        .result.show { display: block; }
+        .score-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            position: relative;
+        }
+        .score-circle.high { background: rgba(255, 0, 110, 0.2); border: 2px solid #ff006e; color: #ff006e; }
+        .score-circle.medium { background: rgba(255, 193, 7, 0.2); border: 2px solid #ffc107; color: #ffc107; }
+        .score-circle.low { background: rgba(76, 175, 80, 0.2); border: 2px solid #4caf50; color: #4caf50; }
+        .score-label { color: #888; font-size: 12px; }
+        .signals {
+            margin: 20px 0;
+        }
+        .signal {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+        .signal-icon {
+            margin-right: 10px;
+            font-size: 16px;
+            margin-top: 2px;
+        }
+        .signal-text {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .paywall {
+            background: rgba(255, 0, 110, 0.1);
+            border: 1px solid rgba(255, 0, 110, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .paywall p {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        .paywall-blur {
+            filter: blur(4px);
+            pointer-events: none;
+            opacity: 0.5;
+            margin-bottom: 16px;
+        }
+        .cta-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .cta-button {
+            padding: 10px 16px;
+            font-size: 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .cta-29 {
+            background: #ff006e;
+            color: white;
+        }
+        .cta-29:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 0, 110, 0.3); }
+        .cta-99 {
+            background: linear-gradient(135deg, #8338ec, #3a86ff);
+            color: white;
+        }
+        .cta-99:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(131, 56, 236, 0.3); }
+        .timer {
+            font-size: 11px;
+            color: #ff006e;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💬 Message Analyzer</h1>
+            <p>Paste a conversation — get a scam risk analysis</p>
+        </div>
+
+        <div class="card">
+            <div class="input-group">
+                <label>Paste your conversation:</label>
+                <textarea id="messages" placeholder="Paste the chat/messages here. Include names if available."></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="analyzeMessages()">Analyze Conversation</button>
+                <button class="btn-secondary" onclick="clearInput()">Clear</button>
+            </div>
+        </div>
+
+        <div class="result card" id="result">
+            <div class="score-box">
+                <div class="score-circle" id="scoreCircle">—</div>
+                <div class="score-label">Risk Assessment</div>
+            </div>
+
+            <div id="signals" class="signals"></div>
+
+            <div class="paywall">
+                <p>📊 Full signal breakdown, detailed explanations, and next steps below:</p>
+                <div class="paywall-blur" id="blur">
+                    <div class="signal">
+                        <div class="signal-icon">⚠️</div>
+                        <div class="signal-text">Signal detected: Fast emotional escalation — said "I love you" or extreme attachment within 48 hours</div>
+                    </div>
+                    <div class="signal">
+                        <div class="signal-icon">⚠️</div>
+                        <div class="signal-text">Platform shift: Pushed to WhatsApp, Telegram, or off-app messaging within first week</div>
+                    </div>
+                    <div class="signal">
+                        <div class="signal-icon">✓</div>
+                        <div class="signal-text">No investment pitch detected (yet)</div>
+                    </div>
+                </div>
+                <div class="cta-buttons">
+                    <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="cta-button cta-29">$29 Full Report</a>
+                    <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="cta-button cta-99">$99 Concierge</a>
+                </div>
+                <div class="timer" id="timer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCAM_PATTERNS = {
+            fast_attachment: {
+                patterns: [/i love you/i, /miss you so much/i, /can't live without/i, /my soulmate/i],
+                weight: 15,
+                label: "Rapid emotional escalation (love, attachment, 'soulmate')"
+            },
+            platform_shift: {
+                patterns: [/whatsapp/i, /telegram/i, /let's move to/i, /this app sucks/i, /message me on/i],
+                weight: 12,
+                label: "Platform migration push (WhatsApp, Telegram, off-app)"
+            },
+            investment_pitch: {
+                patterns: [/trading/i, /crypto/i, /investment/i, /make money/i, /show you how/i, /platform/i],
+                weight: 20,
+                label: "Investment or money-making opportunity introduced"
+            },
+            money_request: {
+                patterns: [/send money/i, /need \$|need money/i, /transfer/i, /western union/i, /bitcoin/i, /pay for/i],
+                weight: 18,
+                label: "Money request or financial pressure"
+            },
+            vague_responses: {
+                patterns: [/yeah|ok|lol/i],
+                weight: 5,
+                label: "Vague or one-word responses (potential bot/scammer)"
+            },
+            story_inconsistency: {
+                patterns: [/said|told you|remember when/i],
+                weight: 8,
+                label: "Story inconsistencies (check manually)"
+            },
+            video_avoidance: {
+                patterns: [/can't video|bad signal|camera broken|can't call/i],
+                weight: 12,
+                label: "Consistent excuse-making for no live video calls"
+            },
+            military_story: {
+                patterns: [/deployed|military|soldier|contractor|base|stationed/i],
+                weight: 10,
+                label: "Military/deployed backstory (high-risk narrative)"
+            },
+            photo_concern: {
+                patterns: [/send photo|picture of you|send pics/i],
+                weight: 8,
+                label: "Unusual photo requests (blackmail setup)"
+            },
+            urgency_pressure: {
+                patterns: [/hurry|soon|quickly|time sensitive|today/i],
+                weight: 10,
+                label: "Artificial urgency or time pressure"
+            }
+        };
+
+        function analyzeMessages() {
+            const text = document.getElementById('messages').value.trim();
+            if (!text) {
+                alert('Please paste a conversation.');
+                return;
+            }
+
+            let score = 0;
+            const detected = [];
+
+            for (const [key, pattern] of Object.entries(SCAM_PATTERNS)) {
+                const matches = pattern.patterns.some(p => p.test(text));
+                if (matches) {
+                    score += pattern.weight;
+                    detected.push({ label: pattern.label, weight: pattern.weight });
+                }
+            }
+
+            score = Math.min(100, score);
+
+            displayResult(score, detected);
+            document.getElementById('result').classList.add('show');
+            startTimer();
+        }
+
+        function displayResult(score, signals) {
+            const circle = document.getElementById('scoreCircle');
+            const signalsDiv = document.getElementById('signals');
+
+            circle.textContent = score;
+            circle.className = 'score-circle';
+            if (score >= 60) circle.classList.add('high');
+            else if (score >= 35) circle.classList.add('medium');
+            else circle.classList.add('low');
+
+            signalsDiv.innerHTML = signals.map(s => `
+                <div class="signal">
+                    <div class="signal-icon">${s.weight >= 15 ? '🚩' : '⚠️'}</div>
+                    <div class="signal-text">${s.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function startTimer() {
+            let time = 600;
+            const timerEl = document.getElementById('timer');
+            setInterval(() => {
+                time--;
+                if (time > 0) {
+                    const mins = Math.floor(time / 60);
+                    const secs = time % 60;
+                    timerEl.textContent = `⏱️ Full report expires in ${mins}:${secs.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function clearInput() {
+            document.getElementById('messages').value = '';
+            document.getElementById('result').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
