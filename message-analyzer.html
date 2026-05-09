@@ -3,348 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message Analyzer — Scam Detector</title>
+    <title>Romance Scam Message Analyzer | ProfileShield</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, #0f0f1e 0%, #1a0033 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #e0e0e0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            padding: 20px;
-        }
-        .container { max-width: 700px; margin: 0 auto; }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-top: 20px;
-        }
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #ff006e, #8338ec);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .header p {
-            color: #888;
-            font-size: 14px;
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-        }
-        .input-group {
-            margin-bottom: 16px;
-        }
-        label {
-            display: block;
-            font-size: 14px;
-            margin-bottom: 8px;
-            color: #bbb;
-        }
-        textarea {
-            width: 100%;
-            height: 180px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #e0e0e0;
-            padding: 12px;
-            font-family: monospace;
-            font-size: 13px;
-            resize: vertical;
-        }
-        textarea::placeholder { color: #666; }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        button {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #ff006e, #8338ec);
-            color: white;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255, 0, 110, 0.3); }
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #e0e0e0;
-        }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
-        .result {
-            display: none;
-            margin-top: 20px;
-        }
-        .result.show { display: block; }
-        .score-box {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .score-circle {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 16px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(30, 30, 50, 0.95);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d0d0d0;
+            font-weight: 500;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(50, 50, 80, 0.6);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            min-height: 150px;
+            resize: vertical;
+        }
+        textarea::placeholder {
+            color: #707090;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(50, 50, 80, 0.4);
+            border-radius: 8px;
+            border-left: 4px solid #ff6b6b;
+        }
+        .result-section.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .risk-score {
             font-size: 48px;
             font-weight: bold;
-            position: relative;
+            color: #ff6b6b;
+            text-align: center;
+            margin: 20px 0;
         }
-        .score-circle.high { background: rgba(255, 0, 110, 0.2); border: 2px solid #ff006e; color: #ff006e; }
-        .score-circle.medium { background: rgba(255, 193, 7, 0.2); border: 2px solid #ffc107; color: #ffc107; }
-        .score-circle.low { background: rgba(76, 175, 80, 0.2); border: 2px solid #4caf50; color: #4caf50; }
-        .score-label { color: #888; font-size: 12px; }
-        .signals {
+        .risk-label {
+            text-align: center;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+        .signal-list {
             margin: 20px 0;
         }
         .signal {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
             padding: 10px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-        }
-        .signal-icon {
-            margin-right: 10px;
-            font-size: 16px;
-            margin-top: 2px;
-        }
-        .signal-text {
+            margin-bottom: 8px;
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 3px solid #ff6b6b;
+            border-radius: 4px;
+            color: #d0d0d0;
             font-size: 13px;
-            line-height: 1.5;
         }
+        .signal.high { border-left-color: #ff4444; }
+        .signal.medium { border-left-color: #ffa940; }
+        .signal.low { border-left-color: #85ce61; }
         .paywall {
-            background: rgba(255, 0, 110, 0.1);
-            border: 1px solid rgba(255, 0, 110, 0.3);
-            border-radius: 8px;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
             padding: 20px;
-            text-align: center;
+            border-radius: 8px;
             margin-top: 20px;
+            text-align: center;
+        }
+        .paywall h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
         }
         .paywall p {
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 12px;
+            color: #b0b0b0;
+            font-size: 13px;
+            margin-bottom: 15px;
         }
-        .paywall-blur {
-            filter: blur(4px);
-            pointer-events: none;
-            opacity: 0.5;
-            margin-bottom: 16px;
-        }
-        .cta-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .cta-button {
-            padding: 10px 16px;
-            font-size: 12px;
+        .paywall-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: white;
+            border: none;
             border-radius: 6px;
             text-decoration: none;
-            text-align: center;
             font-weight: 600;
-            transition: all 0.2s;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
-        .cta-29 {
-            background: #ff006e;
-            color: white;
+        .paywall-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 107, 107, 0.3);
         }
-        .cta-29:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 0, 110, 0.3); }
-        .cta-99 {
-            background: linear-gradient(135deg, #8338ec, #3a86ff);
-            color: white;
-        }
-        .cta-99:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(131, 56, 236, 0.3); }
         .timer {
-            font-size: 11px;
-            color: #ff006e;
             text-align: center;
+            color: #ff9999;
+            font-size: 12px;
             margin-top: 10px;
+        }
+        .blur {
+            filter: blur(4px);
+            user-select: none;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>💬 Message Analyzer</h1>
-            <p>Paste a conversation — get a scam risk analysis</p>
-        </div>
-
-        <div class="card">
-            <div class="input-group">
-                <label>Paste your conversation:</label>
-                <textarea id="messages" placeholder="Paste the chat/messages here. Include names if available."></textarea>
+        <h1>💬 Message Analyzer</h1>
+        <p class="subtitle">Paste a conversation & check for scam red flags</p>
+        
+        <form id="analyzerForm">
+            <div class="form-group">
+                <label for="messages">Paste the conversation here:</label>
+                <textarea id="messages" name="messages" placeholder="Paste chat messages, DMs, or email exchanges..."></textarea>
             </div>
-            <div class="button-group">
-                <button class="btn-primary" onclick="analyzeMessages()">Analyze Conversation</button>
-                <button class="btn-secondary" onclick="clearInput()">Clear</button>
-            </div>
-        </div>
+            <button type="submit">Analyze Conversation</button>
+        </form>
 
-        <div class="result card" id="result">
-            <div class="score-box">
-                <div class="score-circle" id="scoreCircle">—</div>
-                <div class="score-label">Risk Assessment</div>
+        <div id="resultSection" class="result-section">
+            <div class="risk-score" id="riskScore">--</div>
+            <div class="risk-label" id="riskLabel">Analyzing...</div>
+            
+            <div id="publicSignals">
+                <h3 style="color: #ff6b6b; margin-bottom: 15px;">Detected Signals</h3>
+                <div id="signalList" class="signal-list"></div>
             </div>
-
-            <div id="signals" class="signals"></div>
 
             <div class="paywall">
-                <p>📊 Full signal breakdown, detailed explanations, and next steps below:</p>
-                <div class="paywall-blur" id="blur">
-                    <div class="signal">
-                        <div class="signal-icon">⚠️</div>
-                        <div class="signal-text">Signal detected: Fast emotional escalation — said "I love you" or extreme attachment within 48 hours</div>
-                    </div>
-                    <div class="signal">
-                        <div class="signal-icon">⚠️</div>
-                        <div class="signal-text">Platform shift: Pushed to WhatsApp, Telegram, or off-app messaging within first week</div>
-                    </div>
-                    <div class="signal">
-                        <div class="signal-icon">✓</div>
-                        <div class="signal-text">No investment pitch detected (yet)</div>
-                    </div>
-                </div>
-                <div class="cta-buttons">
-                    <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="cta-button cta-29">$29 Full Report</a>
-                    <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="cta-button cta-99">$99 Concierge</a>
-                </div>
-                <div class="timer" id="timer"></div>
+                <h3>Get Your Full Analysis</h3>
+                <p id="blurredText" class="blur">
+                    Your conversation shows 7 high-confidence scam signals. Learn exactly what they are, what each signal means, and what you should do next.
+                </p>
+                <p style="color: #ff6b6b; margin-top: 10px; font-weight: 600;">Unlock for $29</p>
+                <a href="https://www.paypal.com/ncp/payment/D88HW6GHPY346" class="paywall-button">Get Full Report ($29)</a>
+                <a href="https://www.paypal.com/ncp/payment/DD3J39FE8KFKG" class="paywall-button">Talk to Expert ($99)</a>
+                <div class="timer">⏱️ Limited time access: <span id="timerCount">10:00</span></div>
             </div>
         </div>
     </div>
 
     <script>
         const SCAM_PATTERNS = {
-            fast_attachment: {
-                patterns: [/i love you/i, /miss you so much/i, /can't live without/i, /my soulmate/i],
-                weight: 15,
-                label: "Rapid emotional escalation (love, attachment, 'soulmate')"
-            },
-            platform_shift: {
-                patterns: [/whatsapp/i, /telegram/i, /let's move to/i, /this app sucks/i, /message me on/i],
-                weight: 12,
-                label: "Platform migration push (WhatsApp, Telegram, off-app)"
-            },
-            investment_pitch: {
-                patterns: [/trading/i, /crypto/i, /investment/i, /make money/i, /show you how/i, /platform/i],
-                weight: 20,
-                label: "Investment or money-making opportunity introduced"
-            },
-            money_request: {
-                patterns: [/send money/i, /need \$|need money/i, /transfer/i, /western union/i, /bitcoin/i, /pay for/i],
-                weight: 18,
-                label: "Money request or financial pressure"
-            },
-            vague_responses: {
-                patterns: [/yeah|ok|lol/i],
-                weight: 5,
-                label: "Vague or one-word responses (potential bot/scammer)"
-            },
-            story_inconsistency: {
-                patterns: [/said|told you|remember when/i],
-                weight: 8,
-                label: "Story inconsistencies (check manually)"
-            },
-            video_avoidance: {
-                patterns: [/can't video|bad signal|camera broken|can't call/i],
-                weight: 12,
-                label: "Consistent excuse-making for no live video calls"
-            },
-            military_story: {
-                patterns: [/deployed|military|soldier|contractor|base|stationed/i],
-                weight: 10,
-                label: "Military/deployed backstory (high-risk narrative)"
-            },
-            photo_concern: {
-                patterns: [/send photo|picture of you|send pics/i],
-                weight: 8,
-                label: "Unusual photo requests (blackmail setup)"
-            },
-            urgency_pressure: {
-                patterns: [/hurry|soon|quickly|time sensitive|today/i],
-                weight: 10,
-                label: "Artificial urgency or time pressure"
-            }
+            high: [
+                { pattern: /i love you|i'm in love with you/i, points: 25, label: "Fast 'I love you'" },
+                { pattern: /whatsapp|telegram|signal|wickr/i, points: 20, label: "Platform shift to encrypted app" },
+                { pattern: /deployed|military|stationed|base|mission/i, points: 15, label: "Military deployed story" },
+                { pattern: /crypto|bitcoin|ethereum|trading|investment|pump/i, points: 20, label: "Crypto/investment pitch" },
+                { pattern: /can't video|no camera|broken phone|video call not possible/i, points: 18, label: "Avoids live video" },
+                { pattern: /send money|western union|moneygram|transfer funds|wire transfer/i, points: 30, label: "Money request" },
+                { pattern: /customs fee|emergency|hospital|accident|stuck|stranded/i, points: 22, label: "Emergency money story" }
+            ],
+            medium: [
+                { pattern: /miss you so much|can't wait|dream about you|think of you constantly/i, points: 10, label: "Intense emotional bonding (early)" },
+                { pattern: /photos|pictures|send me|can you send/i, points: 8, label: "Requests for photos" },
+                { pattern: /lucky|blessed|fate|destiny|meant to be/i, points: 7, label: "Destiny/fate language" },
+                { pattern: /business opportunity|make money|easy cash|side hustle/i, points: 12, label: "Money-making scheme mention" },
+                { pattern: /no service|bad wifi|poor signal|can't call now/i, points: 9, label: "Constant communication excuses" }
+            ]
         };
 
+        const form = document.getElementById('analyzerForm');
+        const resultSection = document.getElementById('resultSection');
+        const riskScore = document.getElementById('riskScore');
+        const riskLabel = document.getElementById('riskLabel');
+        const signalList = document.getElementById('signalList');
+        let timerInterval;
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            analyzeMessages();
+        });
+
         function analyzeMessages() {
-            const text = document.getElementById('messages').value.trim();
-            if (!text) {
-                alert('Please paste a conversation.');
+            const text = document.getElementById('messages').value;
+            if (!text.trim()) {
+                alert('Please paste a conversation to analyze');
                 return;
             }
 
             let score = 0;
-            const detected = [];
+            const detectedSignals = [];
 
-            for (const [key, pattern] of Object.entries(SCAM_PATTERNS)) {
-                const matches = pattern.patterns.some(p => p.test(text));
-                if (matches) {
-                    score += pattern.weight;
-                    detected.push({ label: pattern.label, weight: pattern.weight });
+            // Check high-risk patterns
+            SCAM_PATTERNS.high.forEach(pattern => {
+                if (pattern.pattern.test(text)) {
+                    score += pattern.points;
+                    detectedSignals.push({ ...pattern, level: 'high' });
                 }
-            }
+            });
 
-            score = Math.min(100, score);
+            // Check medium-risk patterns
+            SCAM_PATTERNS.medium.forEach(pattern => {
+                if (pattern.pattern.test(text)) {
+                    score += pattern.points;
+                    detectedSignals.push({ ...pattern, level: 'medium' });
+                }
+            });
 
-            displayResult(score, detected);
-            document.getElementById('result').classList.add('show');
+            // Base score
+            score = Math.min(100, Math.max(0, score));
+
+            // Determine label
+            let label = '';
+            if (score >= 80) label = '🚨 Very High Risk';
+            else if (score >= 60) label = '⚠️ High Risk';
+            else if (score >= 40) label = '⚡ Moderate Risk';
+            else if (score >= 20) label = '⏱️ Low Risk';
+            else label = '✅ Low Risk';
+
+            // Display results
+            riskScore.textContent = score;
+            riskLabel.textContent = label;
+            signalList.innerHTML = detectedSignals.length > 0 
+                ? detectedSignals.map(s => `<div class="signal ${s.level}">${s.label}</div>`).join('')
+                : '<p style="color: #707090;">No major signals detected.</p>';
+
+            resultSection.classList.add('show');
             startTimer();
         }
 
-        function displayResult(score, signals) {
-            const circle = document.getElementById('scoreCircle');
-            const signalsDiv = document.getElementById('signals');
-
-            circle.textContent = score;
-            circle.className = 'score-circle';
-            if (score >= 60) circle.classList.add('high');
-            else if (score >= 35) circle.classList.add('medium');
-            else circle.classList.add('low');
-
-            signalsDiv.innerHTML = signals.map(s => `
-                <div class="signal">
-                    <div class="signal-icon">${s.weight >= 15 ? '🚩' : '⚠️'}</div>
-                    <div class="signal-text">${s.label}</div>
-                </div>
-            `).join('');
-        }
-
         function startTimer() {
-            let time = 600;
-            const timerEl = document.getElementById('timer');
-            setInterval(() => {
-                time--;
-                if (time > 0) {
-                    const mins = Math.floor(time / 60);
-                    const secs = time % 60;
-                    timerEl.textContent = `⏱️ Full report expires in ${mins}:${secs.toString().padStart(2, '0')}`;
+            clearInterval(timerInterval);
+            let seconds = 600;
+            const timerSpan = document.getElementById('timerCount');
+            
+            timerInterval = setInterval(() => {
+                seconds--;
+                if (seconds <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('blurredText').style.filter = 'blur(8px)';
+                    return;
                 }
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                timerSpan.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                if (seconds <= 60) timerSpan.style.color = '#ff4444';
             }, 1000);
-        }
-
-        function clearInput() {
-            document.getElementById('messages').value = '';
-            document.getElementById('result').classList.remove('show');
         }
     </script>
 </body>
